@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Stock Control</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Configuración</string>
+    <string name="pref_sql_host">Servidor</string>
+    <string name="pref_sql_host_summ">Dirección del servidor</string>
+    <string name="pref_sql_port">Puerto</string>
+    <string name="pref_sql_user">Usuario</string>
+    <string name="pref_sql_password">Contraseña</string>
+    <string name="pref_sql_sbname">Base de datos</string>
+    <string name="pref_sql_database">Base de datos</string>
+    <string name="connectionSQLerror">xxx</string>
+    <string name="errorSQLconnection">Falló la conexión con el servidor SQL</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="out_office">Fuera de la oficina</string>
+    <string name="pref_sql_host_remote_summ">Servidor remoto</string>
+    <string name="btn_sync">Sincronizar</string>
+    <string name="btn_entradas_previstas">Entradas Previstas</string>
+    <string name="btn_entradas_libres">Entradas Libres</string>
+    <string name="btn_expediciones">Expediciones</string>
+
+</resources>
