@@ -34,27 +34,6 @@ public class SQLConnection {
         return instance;
     }
 
-//    public Connection getConnection(String host, String port, String user, String password, String database){
-//        try {
-//            if (this.host != host || this.user != user || this.password != password) {
-//                this.host = host;
-//                this.port = port;
-//                this.user = user;
-//                this.password = password;
-//                this.database = database;
-//                if ((connection != null) && !connection.isClosed()) {
-//                    connection.close();
-//                }
-//            }
-//            if(connection == null || connection.isClosed())
-//                connection = connectSQL();
-//            return connection;
-//        } catch (java.sql.SQLException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-
     public Connection getConnection() {
         if (connection == null)
             connection = connectSQL();
