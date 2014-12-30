@@ -19,9 +19,18 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libs' //this way we can find the .aar file in libs folder
+    }
+}
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:21.0.0'
     compile 'com.android.support:support-v4:21.0.0'
-    compile files('libs/jtds-1.2.7.jar')
+    //compile files('libs/jtds-1.2.7.jar')
+    //compile 'es.incaser.apps.tools:tools:1.0@aar'
+    //compile 'be.hcpl.android.appframework:appframework:0.1.0@aar'
+    compile project(':tools')
 }

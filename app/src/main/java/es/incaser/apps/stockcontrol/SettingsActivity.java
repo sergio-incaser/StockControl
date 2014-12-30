@@ -70,6 +70,7 @@ public class SettingsActivity extends PreferenceActivity {
         //bindPreferenceSummaryToValue(findPreference("pref_sql_password"));
         bindPreferenceSummaryToValue(findPreference("pref_sql_database"));
         bindPreferenceSummaryBoolToValue(findPreference("pref_out_office"));
+        bindPreferenceSummaryToValue(findPreference("pref_last_sync"));
 
         // Add 'notifications' preferences, and a corresponding header.
 //        PreferenceCategory fakeHeader = new PreferenceCategory(this);

@@ -90,7 +90,6 @@ public class DbAdapter extends SQLiteOpenHelper {
         }
     }
 
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         // TODO Auto-generated method stub

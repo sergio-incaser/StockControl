@@ -79,14 +79,14 @@ public class MainActivity extends ActionBarActivity {
     };
 
     private void launchHardSync(){
-        TimerTaskHard timerTaskHard = new TimerTaskHard(handler);
+        TimerTaskHard timerTaskHard = new TimerTaskHard(handler, getApplicationContext());
         Timer timer = new Timer();
         timer.schedule(timerTaskHard, 1500, 5000);
     }
 
-    private void launcSoftSync(){
-        TimerTaskHard timerTaskHard = new TimerTaskHard(handler);
-        Timer timer = new Timer();
-        timer.schedule(timerTaskHard, 1500, 5000);
-    }
+//    private void launcSoftSync(){
+//        TimerTaskHard timerTaskHard = new TimerTaskHard(handler);
+//        Timer timer = new Timer();
+//        timer.schedule(timerTaskHard, 1500, 5000);
+//    }
 }

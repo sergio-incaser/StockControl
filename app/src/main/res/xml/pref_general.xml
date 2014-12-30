@@ -31,4 +31,8 @@
         android:defaultValue="false"
         android:summaryOff="Conecta con servidor local"
         android:summaryOn="Conecta con servidor remoto"/>
+    <EditTextPreference
+        android:key="pref_last_sync"
+        android:inputType="datetime"
+        android:title="@string/pref_last_sync" />
 </PreferenceScreen>

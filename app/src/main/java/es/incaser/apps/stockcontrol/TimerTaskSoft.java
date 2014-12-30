@@ -2,7 +2,6 @@ package es.incaser.apps.stockcontrol;
 
 import android.os.Handler;
 import android.os.Message;
-
 import java.util.TimerTask;
 
 /**
@@ -18,8 +17,9 @@ public class TimerTaskSoft extends TimerTask{
     
     @Override
     public void run() {
-        msg = Message.obtain(handler, 10, "Run Hard");
+        msg = Message.obtain(handler, 5, "Run Hard");
         handler.sendMessage(msg);
+        //Guardo fecha-hora de la sincronizacion ** Max fecharegistro de MovimientoArticuloSerie
     }
 }
 
