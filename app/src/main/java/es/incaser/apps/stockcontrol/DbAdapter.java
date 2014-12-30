@@ -29,7 +29,7 @@ public class DbAdapter extends SQLiteOpenHelper {
             {"MovimientoStock", "SELECT * FROM MovimientoStock", "AcumuladoStock=0"},
             //{"INC_Incidencias", "SELECT * FROM INC_Incidencias", "INC_PendienteSync <> 0"},
             //Fin Tablas a importar
-            {"MovimientosArticuloSerie", "SELECT * FROM MovimientosArticuloSerie", "(FechaRegistro > { fn NOW() } - 3)"},
+            {"MovimientosArticuloSerie", "SELECT * FROM MovimientosArticuloSerie", "(FechaRegistro > GETDATE() - 3)"},
     };
     public static int tablesToImport = 4; // Modificar en caso de añadir mas tablas
     public static int tablesToExport = 4; // Exportar tablas a partir de este indice
@@ -110,6 +110,31 @@ public class DbAdapter extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    public void recreateDb(){
+        for (String[] query : QUERY_LIST) {
+            db.execSQL("DROP TABLE IF EXISTS " + query[0]);
+        }
+        onCreate(db);
+    }
+    
+    public boolean checkTables(){
+        String tableList = "";
+        int i = 0;
+        for (String[] query : QUERY_LIST) {
+            if (i > 0){
+                tableList = tableList + ",";
+            }
+            tableList = tableList + "'" + query + "'";
+            i ++;
+        }
+        Cursor curtmp = getCursor("Select * from sqlite_master WHERE name IN (" + tableList + ")");
+        if (curtmp.getCount() == i){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     public void emptyTables() {

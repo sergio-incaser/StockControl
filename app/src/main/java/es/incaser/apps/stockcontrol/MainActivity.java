@@ -1,8 +1,11 @@
 package es.incaser.apps.stockcontrol;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,13 +17,13 @@ import java.util.Timer;
 
 
 public class MainActivity extends ActionBarActivity {
-    
+    Timer timer = new Timer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        launchHardSync();
+        ReadPreferences(this);
     }
 
     @Override
@@ -50,6 +53,9 @@ public class MainActivity extends ActionBarActivity {
         switch (view.getId()){
             case R.id.btn_sync:
                 //forzamos el proceso de sincronizacion de los movimientos
+                //DbAdapter dbAdapter = new DbAdapter(getApplicationContext());
+                //dbAdapter.recreateDb();
+                launchHardSync();
                 break;
             case R.id.btn_entradas_previstas:
                 break;
@@ -80,7 +86,6 @@ public class MainActivity extends ActionBarActivity {
 
     private void launchHardSync(){
         TimerTaskHard timerTaskHard = new TimerTaskHard(handler, getApplicationContext());
-        Timer timer = new Timer();
         timer.schedule(timerTaskHard, 1500, 5000);
     }
 
@@ -89,4 +94,25 @@ public class MainActivity extends ActionBarActivity {
 //        Timer timer = new Timer();
 //        timer.schedule(timerTaskHard, 1500, 5000);
 //    }
+
+    
+    
+    public static void ReadPreferences(Activity act) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(act);
+        if (pref.getBoolean("pref_out_office", false)) {
+            SQLConnection.host = pref.getString("pref_sql_host_remote", "");
+        } else {
+            SQLConnection.host = pref.getString("pref_sql_host", "");
+        }
+        SQLConnection.port = pref.getString("pref_sql_port", "");
+        SQLConnection.user = pref.getString("pref_sql_user", "");
+        SQLConnection.password = pref.getString("pref_sql_password", "");
+        SQLConnection.database = pref.getString("pref_sql_database", "");
+    }
+
+    @Override
+    protected void onDestroy() {
+        timer.cancel();
+        super.onDestroy();
+    }
 }
