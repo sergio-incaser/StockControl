@@ -50,16 +50,19 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onClickButtons(View view){
+        DbAdapter dbAdapter = new DbAdapter(getApplicationContext());
         switch (view.getId()){
             case R.id.btn_sync:
                 //forzamos el proceso de sincronizacion de los movimientos
-                //DbAdapter dbAdapter = new DbAdapter(getApplicationContext());
-                //dbAdapter.recreateDb();
                 launchHardSync();
                 break;
             case R.id.btn_entradas_previstas:
+                if (! dbAdapter.checkTables()){
+                    dbAdapter.recreateDb();
+                };
                 break;
             case R.id.btn_entradas_libres:
+                dbAdapter.recreateDb();
                 break;
             case R.id.btn_expediciones:
                 break;

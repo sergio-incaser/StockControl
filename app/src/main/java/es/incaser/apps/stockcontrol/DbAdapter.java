@@ -29,7 +29,8 @@ public class DbAdapter extends SQLiteOpenHelper {
             {"MovimientoStock", "SELECT * FROM MovimientoStock", "AcumuladoStock=0"},
             //{"INC_Incidencias", "SELECT * FROM INC_Incidencias", "INC_PendienteSync <> 0"},
             //Fin Tablas a importar
-            {"MovimientosArticuloSerie", "SELECT * FROM MovimientosArticuloSerie", "(FechaRegistro > GETDATE() - 3)"},
+            //{"MArtSerie", "SELECT * FROM MovimientosArticuloSerie", "(FechaRegistro > GETDATE() - 3)"},
+            {"MovimientoArticuloSerie", "SELECT * FROM MovimientoArticuloSerie", "(FechaRegistro > '2014-12-23')"},
     };
     public static int tablesToImport = 4; // Modificar en caso de añadir mas tablas
     public static int tablesToExport = 4; // Exportar tablas a partir de este indice
@@ -69,6 +70,8 @@ public class DbAdapter extends SQLiteOpenHelper {
                     rsmd = rs.getMetaData();
                     for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                         colname = rsmd.getColumnName(i);
+                        Log.d(query[0] + " " + String.valueOf(columnsSql.length()), colname + " " + String.valueOf(i));
+
                         coltype = rsmd.getColumnTypeName(i);
                         columnsSql += ", '" + colname + "' " + coltype;
                     }
@@ -126,7 +129,7 @@ public class DbAdapter extends SQLiteOpenHelper {
             if (i > 0){
                 tableList = tableList + ",";
             }
-            tableList = tableList + "'" + query + "'";
+            tableList = tableList + "'" + query[0] + "'";
             i ++;
         }
         Cursor curtmp = getCursor("Select * from sqlite_master WHERE name IN (" + tableList + ")");
