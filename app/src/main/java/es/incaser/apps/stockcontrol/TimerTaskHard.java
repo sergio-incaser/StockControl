@@ -39,4 +39,3 @@ public class TimerTaskHard extends TimerTask{
         handler.sendMessage(msg);
     }
 }
-

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,11 +27,11 @@ public class DbAdapter extends SQLiteOpenHelper {
             //Tablas a importar
             {"Articulos", "SELECT * FROM VIS_INC_ArticulosAndroid", ""},
             {"GrupoTallas_", "SELECT * FROM GrupoTallas_", ""},
-            {"MovimientoStock", "SELECT * FROM MovimientoStock", "AcumuladoStock=0"},
+            {"MovimientoStock", "SELECT * FROM VIS_INC_MovimientoStockAndroid", "StatusAndroidSync=1"},
             //{"INC_Incidencias", "SELECT * FROM INC_Incidencias", "INC_PendienteSync <> 0"},
             //Fin Tablas a importar
             //{"MArtSerie", "SELECT * FROM MovimientosArticuloSerie", "(FechaRegistro > GETDATE() - 3)"},
-            {"MovimientoArticuloSerie", "SELECT * FROM MovimientoArticuloSerie", "(FechaRegistro > '2014-12-23')"},
+            {"MovimientoArticuloSerie", "SELECT * FROM VIS_INC_MovArticuloSerieAnd", "(FechaRegistro > '2014-12-23') AND StatusAndroidSync=1"},
     };
     public static int tablesToImport = 4; // Modificar en caso de añadir mas tablas
     public static int tablesToExport = 4; // Exportar tablas a partir de este indice
@@ -203,6 +204,15 @@ public class DbAdapter extends SQLiteOpenHelper {
         return db.query(tableName, new String[]{"*"}, "printable=?", new String[]{"-1"}, "", "", "");
     }
 
+    public String getMaxTimeStamp(){
+        Cursor cursor = db.rawQuery("Select MAX(FechaRegistro) FROM MovimientoArticuloSerie",new String[]{});
+        if (cursor.moveToFirst()){
+            return cursor.getString(0);
+        }else {
+            return "2015-01-01 00:00:00.0";
+        }
+    }
+
     public Cursor getEstablecimiento(String id) {
         Cursor cur = db.query("Establecimientos", new String[]{"*"}, "id=?", new String[]{id}, "", "", "");
         cur.moveToFirst();
@@ -254,7 +264,7 @@ public class DbAdapter extends SQLiteOpenHelper {
         return dicRelLineasCabecera;
     }
 
-    public Cursor getTotalesRecaudacion(String empresa, String establecimento, String fecha) {
+    public Cursor getTotalesRecaudacion(String empresa, String establecimiento, String fecha) {
 //        Map<String, String> dicRelLineasCabecera = getDicRelLineasCabecera();
 //        String[] campos = dicRelLineasCabecera.keySet().toString().replace("[","").replace("]","").split(",");
         String[] campos = new String[]{
@@ -274,7 +284,7 @@ public class DbAdapter extends SQLiteOpenHelper {
 
         String where = "Printable=1 AND CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_FechaRecaudacion=?";
         String groupBy = "CodigoEmpresa, INC_CodigoEstablecimiento, INC_FechaRecaudacion";
-        String[] whereArgs = new String[]{empresa, establecimento, fecha};
+        String[] whereArgs = new String[]{empresa, establecimiento, fecha};
         return db.query("INC_LineasRecaudacion", campos, where, whereArgs, groupBy, "", "");
     }
 
