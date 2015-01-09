@@ -15,6 +15,7 @@ import org.w3c.dom.Text;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -89,10 +90,29 @@ public class SyncData {
                 };
             };
         };
+        importMovArticuloSerie();
         return numReg;
     }
-    
-    
+
+    public boolean importMovArticuloSerie() {
+        ResultSet rs = conSQL.getResultset("Select * FROM MovimientoArticuloSerie WHERE FechaRegistro > '2015-01-01 00:00:00.0'");
+        try {
+            Cursor cursor;
+            while (rs.next()){
+                //TODO. Upsert en la base de datos local
+                cursor = dbAdapter.getMovArticuloSerieGuid(rs.getString("MovPosicion"));
+                if (cursor.moveToFirst()){
+                    //Tengo el registro... hay que updatarlo
+                    dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie",rs.getString("MovPosicion"),rs.getString("StatusAndroidSync"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public int copyRecords(Cursor source, String tableSource, ResultSet target) {
         ResultSetMetaData RSmd;
         List<String> columnList = new ArrayList();

@@ -231,7 +231,12 @@ public class DbAdapter extends SQLiteOpenHelper {
         return cur;
     }
 
-    
+    public Cursor getMovArticuloSerieGuid(String movPosicion) {
+        Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"*"}, "MovPosicion='?'",
+                new String[]{movPosicion}, "", "", "");
+        return cur;
+    }
+
     //*******************************************************************************////
     public Cursor getMaquinasEstablecimiento(String codigoEmpresa, String codigoEstablecimiento) {
         return db.query("Maquinas", new String[]{"*"}, "CodigoEmpresa=? AND INC_CodigoEstablecimiento=?",
