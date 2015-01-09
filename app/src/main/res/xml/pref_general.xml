@@ -35,4 +35,12 @@
         android:key="pref_last_sync"
         android:inputType="datetime"
         android:title="@string/pref_last_sync" />
+    <EditTextPreference
+        android:key="pref_hard_sync"
+        android:inputType="number"
+        android:title="@string/pref_hard_sync" />
+    <EditTextPreference
+        android:key="pref_soft_sync"
+        android:inputType="number"
+        android:title="@string/pref_soft_sync" />
 </PreferenceScreen>

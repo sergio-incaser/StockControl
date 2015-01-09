@@ -20,7 +20,7 @@ public class TimerTaskHard extends TimerTask{
     
     @Override
     public void run() {
-        msg = Message.obtain(handler, 10, "Run Hard");
+        msg = Message.obtain(handler, 0, "Run Hard");
         try {
             SyncData syncData = new SyncData(context);
             syncData.conSQL = new SQLConnection();
@@ -33,6 +33,7 @@ public class TimerTaskHard extends TimerTask{
             } else {
                 msg.obj = "ERROR EN LA SINCRONIZACION";
             }
+            syncData = null;
         }catch(Exception ee){
             msg.obj = ee.toString();
         }

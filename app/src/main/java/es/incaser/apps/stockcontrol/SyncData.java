@@ -6,8 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -65,6 +68,31 @@ public class SyncData {
         return numReg;
     }
 
+    public int exportMovArticuloSerie() {
+        ArrayList <String> guidList = new ArrayList<String>();
+        int numReg = dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.ESCANEADO, StatusSync.EXPORTANDO);
+        if (numReg > 0){
+            Cursor cursor = dbAdapter.getMovArticuloSerie(StatusSync.EXPORTANDO);
+            if (cursor.moveToFirst()){
+                while (cursor.moveToNext()) {
+                    guidList.add("'" + cursor.getString(cursor.getColumnIndex("MovPosicion")) + "'");
+                };
+                if (conSQL.updateSQL("UPDATE MovimientoArticuloSerie SET StatusAndroidSync="+StatusSync.EXPORTADO+", " +
+                        "FechaRegistro = GETDATE() WHERE MovPosicion IN (" + TextUtils.join(",",guidList) + ")") == numReg){
+                    //Correcto
+                    dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.EXPORTANDO, StatusSync.EXPORTADO);
+                }else{
+                    String guidListInexist = conSQL.getGuidsInexistentes(guidList);
+                    //TODO. diferencia de bobinas. Que pasa con estas bobinas???
+                    dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie", guidListInexist,StatusSync.NOT_INSQL);
+                    dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.EXPORTANDO, StatusSync.EXPORTADO);
+                };
+            };
+        };
+        return numReg;
+    }
+    
+    
     public int copyRecords(Cursor source, String tableSource, ResultSet target) {
         ResultSetMetaData RSmd;
         List<String> columnList = new ArrayList();

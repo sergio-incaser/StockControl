@@ -17,7 +17,10 @@ import java.util.Timer;
 
 
 public class MainActivity extends ActionBarActivity {
-    Timer timer = new Timer();
+    Timer timerHard = new Timer();
+    Timer timerSoft = new Timer();
+    static int pref_hard_sync;
+    static int pref_soft_sync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,7 @@ public class MainActivity extends ActionBarActivity {
                 dbAdapter.recreateDb();
                 break;
             case R.id.btn_expediciones:
+                launcSoftSync();
                 break;
         }
     }
@@ -88,17 +92,19 @@ public class MainActivity extends ActionBarActivity {
     };
 
     private void launchHardSync(){
-        TimerTaskHard timerTaskHard = new TimerTaskHard(handler, getApplicationContext());
-        timer.schedule(timerTaskHard, 1500, 5000);
+        if (pref_hard_sync > 0){
+            TimerTaskHard timerTaskHard = new TimerTaskHard(handler, getApplicationContext());
+            timerHard.schedule(timerTaskHard, 1500, pref_hard_sync * 1000);
+        }
     }
 
-//    private void launcSoftSync(){
-//        TimerTaskHard timerTaskHard = new TimerTaskHard(handler);
-//        Timer timer = new Timer();
-//        timer.schedule(timerTaskHard, 1500, 5000);
-//    }
+    private void launcSoftSync(){
+        if(pref_soft_sync > 0){
+            TimerTaskSoft timerTaskSoft = new TimerTaskSoft(handler, getApplicationContext());
+            timerSoft.schedule(timerTaskSoft, 1500, pref_soft_sync * 1000);
+        }
+    }
 
-    
     
     public static void ReadPreferences(Activity act) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(act);
@@ -111,11 +117,15 @@ public class MainActivity extends ActionBarActivity {
         SQLConnection.user = pref.getString("pref_sql_user", "");
         SQLConnection.password = pref.getString("pref_sql_password", "");
         SQLConnection.database = pref.getString("pref_sql_database", "");
+        pref_hard_sync = Integer.parseInt(pref.getString("pref_hard_sync", "0"));
+        pref_soft_sync = Integer.parseInt(pref.getString("pref_soft_sync", "0"));
+
     }
 
     @Override
     protected void onDestroy() {
-        timer.cancel();
+        timerHard.cancel();
+        timerSoft.cancel();
         super.onDestroy();
     }
 }

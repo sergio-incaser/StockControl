@@ -71,6 +71,8 @@ public class SettingsActivity extends PreferenceActivity {
         bindPreferenceSummaryToValue(findPreference("pref_sql_database"));
         bindPreferenceSummaryBoolToValue(findPreference("pref_out_office"));
         bindPreferenceSummaryToValue(findPreference("pref_last_sync"));
+        bindPreferenceSummaryToValue(findPreference("pref_hard_sync"));
+        bindPreferenceSummaryToValue(findPreference("pref_soft_sync"));
 
         // Add 'notifications' preferences, and a corresponding header.
 //        PreferenceCategory fakeHeader = new PreferenceCategory(this);
@@ -207,5 +209,17 @@ public class SettingsActivity extends PreferenceActivity {
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
                         .getBoolean(preference.getKey(), false));
+    }
+    private static void bindPreferenceSummaryIntToValue(Preference preference) {
+        // Set the listener to watch for value changes.
+        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+
+        // Trigger the listener immediately with the preference's
+        // current value.
+
+        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getInt(preference.getKey(), 0));
     }
 }

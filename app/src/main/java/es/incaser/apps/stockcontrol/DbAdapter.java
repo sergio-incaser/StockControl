@@ -213,12 +213,26 @@ public class DbAdapter extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getEstablecimiento(String id) {
-        Cursor cur = db.query("Establecimientos", new String[]{"*"}, "id=?", new String[]{id}, "", "", "");
-        cur.moveToFirst();
+    public int updateStatusSync(String table, String oldStatus, String newStatus){
+        ContentValues cv = new ContentValues();
+        cv.put("StatusAndroidSync", newStatus);
+        return db.update(table, cv,"StatusAndroidSync=?", new String[]{oldStatus});
+    }
+
+    public int updateStatusSyncGuid(String table, String guidList, String newStatus){
+        ContentValues cv = new ContentValues();
+        cv.put("StatusAndroidSync", newStatus);
+        return db.update(table, cv,"MovPosicion in (?)", new String[]{guidList});
+    }
+    
+    public Cursor getMovArticuloSerie(String statusSync) {
+        Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"*"}, "StatusAndroidSync=?",
+                new String[]{statusSync}, "", "", "");
         return cur;
     }
 
+    
+    //*******************************************************************************////
     public Cursor getMaquinasEstablecimiento(String codigoEmpresa, String codigoEstablecimiento) {
         return db.query("Maquinas", new String[]{"*"}, "CodigoEmpresa=? AND INC_CodigoEstablecimiento=?",
                 new String[]{codigoEmpresa, codigoEstablecimiento}, "", "", "");

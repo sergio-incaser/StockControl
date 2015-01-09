@@ -21,5 +21,7 @@
     <string name="btn_entradas_libres">Entradas Libres</string>
     <string name="btn_expediciones">Expediciones</string>
     <string name="pref_last_sync">Sincronizado</string>
+    <string name="pref_hard_sync">Intervalo Hard Sync(Segs.)</string>
+    <string name="pref_soft_sync">Intervalo Soft Sync(Segs.)</string>
 
 </resources>

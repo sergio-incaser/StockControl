@@ -1,11 +1,15 @@
 package es.incaser.apps.stockcontrol;
 
+import android.text.TextUtils;
+
 import net.sourceforge.jtds.jdbc.Driver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 
 /**
@@ -88,6 +92,18 @@ public class SQLConnection {
         return rs;
 
     }
+    public String getGuidsInexistentes(ArrayList<String> guidList){
+        ResultSet rs = getResultset("SELECT MovPosicion FROM MovimientoArticuloSerie " +
+                "WHERE MovPosicion IN (" + TextUtils.join(",", guidList) + ")");
+        try {
+            while (rs.next()){
+                guidList.remove("'"+rs.getString(0).toString()+"'");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return TextUtils.join(",", guidList);
+    };
 
     public int updateSQL(String query) {
         try {
