@@ -2,10 +2,12 @@ package es.incaser.apps.stockcontrol;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -65,11 +67,11 @@ public class SyncData {
             }
         }
         //Consultas de postprocesado
-        conSQL.updateSQL("UPDATE INC_Incidencias SET INC_PendienteSync=0 WHERE INC_PendienteSync<>0");
+        //conSQL.updateSQL("UPDATE INC_Incidencias SET INC_PendienteSync=0 WHERE INC_PendienteSync<>0");
         return numReg;
     }
 
-    public int exportMovArticuloSerie() {
+    public int exportMovArticuloSerie(String syncDate) {
         ArrayList <String> guidList = new ArrayList<String>();
         int numReg = dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.ESCANEADO, StatusSync.EXPORTANDO);
         if (numReg > 0){
@@ -79,7 +81,7 @@ public class SyncData {
                     guidList.add("'" + cursor.getString(cursor.getColumnIndex("MovPosicion")) + "'");
                 };
                 if (conSQL.updateSQL("UPDATE MovimientoArticuloSerie SET StatusAndroidSync="+StatusSync.EXPORTADO+", " +
-                        "FechaRegistro = GETDATE() WHERE MovPosicion IN (" + TextUtils.join(",",guidList) + ")") == numReg){
+                        "FechaRegistro = '"+syncDate+"' WHERE MovPosicion IN (" + TextUtils.join(",",guidList) + ")") == numReg){
                     //Correcto
                     dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.EXPORTANDO, StatusSync.EXPORTADO);
                 }else{
@@ -90,21 +92,31 @@ public class SyncData {
                 };
             };
         };
-        importMovArticuloSerie();
         return numReg;
     }
 
-    public boolean importMovArticuloSerie() {
-        ResultSet rs = conSQL.getResultset("Select * FROM MovimientoArticuloSerie WHERE FechaRegistro > '2015-01-01 00:00:00.0'");
+    public boolean importMovArticuloSerie(String syncDate) {
+        ResultSet rs = conSQL.getResultset("Select * FROM MovimientoArticuloSerie WHERE FechaRegistro > '" + syncDate+"'");
         try {
+            ArrayList<String> guidList = new ArrayList<String>();
             Cursor cursor;
             while (rs.next()){
                 //TODO. Upsert en la base de datos local
-                cursor = dbAdapter.getMovArticuloSerieGuid(rs.getString("MovPosicion"));
+                cursor = dbAdapter.getMovArticuloSerieGuid(rs.getString("MovPosicion").toString());
                 if (cursor.moveToFirst()){
                     //Tengo el registro... hay que updatarlo
-                    dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie",rs.getString("MovPosicion"),rs.getString("StatusAndroidSync"));
+                    dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie",
+                                                    rs.getString("MovPosicion"),
+                                                    rs.getString("StatusAndroidSync"));
+                }else{
+                    //Insertar en la base de datos
+                    guidList.add("'" + rs.getString("MovPosicion") + "'");
                 }
+            }
+            if (guidList.size() > 0){
+                // Se han encontrado registros que no tengo. hay que insertarlos
+                rs = conSQL.getResultset("Select * FROM MovimientoArticuloSerie WHERE MovPosicion IN (" + TextUtils.join(",",guidList) +")");
+                copyRecords(rs, "MovimientoArticuloSerie");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -199,7 +211,7 @@ public class SyncData {
         ResultSetMetaData RSmd;
         ArrayList<String> columnList = new ArrayList();
         int numReg = 0;
-        dbAdapter.emptyTables(target);
+        //dbAdapter.emptyTables(target);
         Log.w(target, "Inicio importacion");
         try {
             RSmd = source.getMetaData();
@@ -250,6 +262,10 @@ public class SyncData {
         return numReg;
     }
 
+    public void emptyLocalTables(){
+        dbAdapter.emptyTables();
+    }
+
     private class SynchronizeTest extends AsyncTask<Integer, Void, String> {
         @Override
         protected String doInBackground(Integer... params) {
@@ -268,4 +284,5 @@ public class SyncData {
             Toast.makeText(myContext, result, Toast.LENGTH_SHORT).show();
         }
     }
+    
 }

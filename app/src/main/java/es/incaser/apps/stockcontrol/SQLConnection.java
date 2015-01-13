@@ -90,8 +90,20 @@ public class SQLConnection {
             e.printStackTrace();
         }
         return rs;
-
     }
+    
+    public String getDate(){
+        ResultSet rs = getResultset("SELECT GETDATE()");
+        try {
+            if (rs.next()){
+                return rs.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "2000-01-01 00:00:00.0";
+    }
+    
     public String getGuidsInexistentes(ArrayList<String> guidList){
         ResultSet rs = getResultset("SELECT MovPosicion FROM MovimientoArticuloSerie " +
                 "WHERE MovPosicion IN (" + TextUtils.join(",", guidList) + ")");

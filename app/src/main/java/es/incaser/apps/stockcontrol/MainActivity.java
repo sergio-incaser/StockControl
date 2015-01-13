@@ -60,9 +60,11 @@ public class MainActivity extends ActionBarActivity {
                 launchHardSync();
                 break;
             case R.id.btn_entradas_previstas:
-                if (! dbAdapter.checkTables()){
-                    dbAdapter.recreateDb();
-                };
+//                if (! dbAdapter.checkTables()){
+//                    dbAdapter.recreateDb();
+//                };
+                Intent intent = new Intent(this, BarcodeReader.class);
+                startActivity(intent);
                 break;
             case R.id.btn_entradas_libres:
                 dbAdapter.recreateDb();

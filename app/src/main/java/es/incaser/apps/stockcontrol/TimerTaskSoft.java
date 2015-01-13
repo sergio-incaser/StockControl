@@ -1,8 +1,11 @@
 package es.incaser.apps.stockcontrol;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
+
 import java.util.TimerTask;
 
 /**
@@ -21,23 +24,35 @@ public class TimerTaskSoft extends TimerTask{
     @Override
     public void run() {
         msg = Message.obtain(handler, 0, "Run Soft");
+        String syncDate;        
         try {
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
             SyncData syncData = new SyncData(context);
             syncData.conSQL = new SQLConnection();
+            syncDate = syncData.conSQL.getDate();
+
             if (SQLConnection.connection == null) {
                 msg.obj = "errorSQLconnection";
             }
-            if (syncData.exportMovArticuloSerie() >= 0) {
-                msg.obj = "Datos Sincronizados";
+            if (syncData.exportMovArticuloSerie(syncDate) >= 0) {
+                msg.obj = "Export Articulos serie";
             } else {
                 msg.obj = "ERROR EN LA SINCRONIZACION";
             }
+            String lastSyncDate = pref.getString("pref_last_sync", "2000-01-01 00:00:00.0");
+            if (syncData.importMovArticuloSerie(lastSyncDate)){
+                msg.obj = "Import Articulos Serie";
+            }else{
+                msg.obj = "ERROR EN LA SINCRONIZACION";
+            }
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("pref_last_sync", syncDate);
+            editor.commit();
             syncData = null;
         }catch(Exception ee){
             msg.obj = ee.toString();
         }
         handler.sendMessage(msg);
-        //Guardo fecha-hora de la sincronizacion ** Max fecharegistro de MovimientoArticuloSerie
     }
 }
 

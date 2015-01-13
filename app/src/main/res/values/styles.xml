@@ -10,4 +10,111 @@
         <item name="android:paddingBottom">20dp</item>
     </style>
 
+    <style name="EtiquetaContadores">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#054657</item>
+        <item name="android:layout_weight">0.33</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+
+    <style name="EtiquetaComentarios">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#054657</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+
+    <style name="TxtContadorAnterior">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.33</item>
+        <item name="android:editable">false</item>
+    </style>
+
+    <style name="TxtContadorActual">
+        <item name="android:selectAllOnFocus">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.33</item>
+        <item name="android:inputType">number</item>
+        <item name="android:numeric">integer</item>
+    </style>
+
+    <style name="EditTextContadores">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="EtiquetaSeparador">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#000</item>
+    </style>
+
+    <style name="EtiquetaTitulo">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#000</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
+
+    
+    <style name="EtiquetaLeft">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TxtImportes">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:inputType">numberDecimal</item>
+        <item name="android:selectAllOnFocus">true</item>
+        <!--<item name="android:numeric">decimal</item>-->
+    </style>
+
+    <style name="TxtImportesBloq">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:editable">false</item>
+    </style>
+
+    <style name="TxtDate">
+        <item name="android:maxLength">10</item>
+        <item name="android:editable">false</item>
+        <item name="android:text">"2014-04-01 00:00:00.0"</item>
+    </style>
+
+    <style name="TvDate">
+        <item name="android:maxLength">10</item>
+        <item name="android:text">"2014-04-01 00:00:00.0"</item>
+    </style>
+
+    <style name="EtiquetaTotalesAll">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#054657</item>
+        <item name="android:layout_weight">0.33</item>
+        <item name="android:typeface">monospace</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TxtImportesBloqAll">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:editable">false</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TxtLayTotalesAll">
+        <item name="android:paddingBottom">2dp</item>
+    </style>
+
 </resources>
