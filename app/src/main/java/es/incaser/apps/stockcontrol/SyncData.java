@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static es.incaser.apps.tools.Tools.date2Sql;
 import static es.incaser.apps.tools.Tools.str2date;
 
 
@@ -76,48 +77,48 @@ public class SyncData {
         int numReg = dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.ESCANEADO, StatusSync.EXPORTANDO);
         if (numReg > 0){
             Cursor cursor = dbAdapter.getMovArticuloSerie(StatusSync.EXPORTANDO);
-            if (cursor.moveToFirst()){
-                while (cursor.moveToNext()) {
-                    guidList.add("'" + cursor.getString(cursor.getColumnIndex("MovPosicion")) + "'");
-                };
-                if (conSQL.updateSQL("UPDATE MovimientoArticuloSerie SET StatusAndroidSync="+StatusSync.EXPORTADO+", " +
-                        "FechaRegistro = '"+syncDate+"' WHERE MovPosicion IN (" + TextUtils.join(",",guidList) + ")") == numReg){
-                    //Correcto
-                    dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.EXPORTANDO, StatusSync.EXPORTADO);
-                }else{
-                    String guidListInexist = conSQL.getGuidsInexistentes(guidList);
-                    //TODO. diferencia de bobinas. Que pasa con estas bobinas???
-                    dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie", guidListInexist,StatusSync.NOT_INSQL);
-                    dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.EXPORTANDO, StatusSync.EXPORTADO);
-                };
+            while (cursor.moveToNext()) {
+                guidList.add("'" + cursor.getString(cursor.getColumnIndex("MovPosicion")) + "'");
+            };
+            if (conSQL.updateSQL("UPDATE MovimientoArticuloSerie SET StatusAndroidSync="+StatusSync.EXPORTADO+", " +
+                    "FechaRegistro = " + date2Sql(syncDate) + " WHERE MovPosicion IN (" + TextUtils.join(",",guidList) + ")") == numReg){
+                //Correcto
+                dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.EXPORTANDO, StatusSync.EXPORTADO);
+            }else{
+                String guidListInexist = conSQL.getGuidsInexistentes(guidList);
+                //TODO. diferencia de bobinas. Que pasa con estas bobinas???
+                dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie", guidListInexist,StatusSync.NOT_INSQL);
+                dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.EXPORTANDO, StatusSync.EXPORTADO);
             };
         };
         return numReg;
     }
 
     public boolean importMovArticuloSerie(String syncDate) {
-        ResultSet rs = conSQL.getResultset("Select * FROM MovimientoArticuloSerie WHERE FechaRegistro > '" + syncDate+"'");
+        ResultSet rs = conSQL.getResultset("Select * FROM MovimientoArticuloSerie WHERE FechaRegistro > " + date2Sql(syncDate));
         try {
             ArrayList<String> guidList = new ArrayList<String>();
             Cursor cursor;
-            while (rs.next()){
-                //TODO. Upsert en la base de datos local
-                cursor = dbAdapter.getMovArticuloSerieGuid(rs.getString("MovPosicion").toString());
-                if (cursor.moveToFirst()){
-                    //Tengo el registro... hay que updatarlo
-                    dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie",
-                                                    rs.getString("MovPosicion"),
-                                                    rs.getString("StatusAndroidSync"));
-                }else{
-                    //Insertar en la base de datos
-                    guidList.add("'" + rs.getString("MovPosicion") + "'");
+            if (rs != null) {
+                while (rs.next()) {
+                    //TODO. Upsert en la base de datos local
+                    cursor = dbAdapter.getMovArticuloSerieGuid(rs.getString("MovPosicion").toString());
+                    if (cursor.moveToFirst()) {
+                        //Tengo el registro... hay que updatarlo
+                        dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie",
+                                rs.getString("MovPosicion"),
+                                rs.getString("StatusAndroidSync"));
+                    } else {
+                        //Insertar en la base de datos
+                        guidList.add("'" + rs.getString("MovPosicion") + "'");
+                    }
                 }
-            }
-            if (guidList.size() > 0){
-                // Se han encontrado registros que no tengo. hay que insertarlos
-                rs = conSQL.getResultset("Select * FROM MovimientoArticuloSerie WHERE MovPosicion IN (" + TextUtils.join(",",guidList) +")");
-                copyRecords(rs, "MovimientoArticuloSerie");
-            }
+                if (guidList.size() > 0) {
+                    // Se han encontrado registros que no tengo. hay que insertarlos
+                    rs = conSQL.getResultset("Select * FROM MovimientoArticuloSerie WHERE MovPosicion IN (" + TextUtils.join(",", guidList) + ")");
+                    copyRecords(rs, "MovimientoArticuloSerie");
+                }
+            };
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

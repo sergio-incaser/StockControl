@@ -41,7 +41,7 @@ public class TimerTaskSoft extends TimerTask{
             }
             String lastSyncDate = pref.getString("pref_last_sync", "2000-01-01 00:00:00.0");
             if (syncData.importMovArticuloSerie(lastSyncDate)){
-                msg.obj = "Import Articulos Serie";
+                msg.obj = "Import MovimientoArticuloSerie";
             }else{
                 msg.obj = "ERROR EN LA SINCRONIZACION";
             }

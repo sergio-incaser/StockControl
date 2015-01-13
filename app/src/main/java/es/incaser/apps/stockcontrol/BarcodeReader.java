@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,7 +25,9 @@ public class BarcodeReader extends ActionBarActivity {
     ImageButton btnReader;
     ListView lvMovimientoStock;
     MovStockAdapter movStockAdapter;
-        
+    DbAdapter dbAdapter;
+    TextView txtBarcode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +61,15 @@ public class BarcodeReader extends ActionBarActivity {
 
     public void addListenerOnButtonRead() {
         btnReader = (ImageButton) findViewById(R.id.btn_read);
+        txtBarcode = (EditText) findViewById(R.id.txt_barcodeReader);
+        
         btnReader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Button pressed", Toast.LENGTH_SHORT).show();                                
+                Toast.makeText(getApplicationContext(),"Button pressed", Toast.LENGTH_SHORT).show();
+                if (txtBarcode.getText().toString().length() > 0){
+                    leerCodigo(txtBarcode.getText().toString());
+                }
             }
         });
     }
@@ -76,13 +84,13 @@ public class BarcodeReader extends ActionBarActivity {
     
     
     
-    public static class MovStockAdapter extends BaseAdapter{
+    public class MovStockAdapter extends BaseAdapter{
         Context context;
         Cursor cursor;
         
         public MovStockAdapter(Context ctx){
             context = ctx;
-            DbAdapter dbAdapter = new DbAdapter(context);
+            dbAdapter = new DbAdapter(context);
             cursor = dbAdapter.getMovimientoStock("1");
             cursor.moveToFirst();
         }
@@ -122,7 +130,7 @@ public class BarcodeReader extends ActionBarActivity {
             TextView txtTotalLecturas = (TextView) myView.findViewById(R.id.tv_totalLecturas);
 
             txtArticulo.setText(getMovimiento("CodigoArticulo"));
-            //txtMatricula.setText("(" + getMovimiento("MatriculaTransporte_") + ")");
+            txtMatricula.setText("(" + getMovimiento("MatriculaTransporte_") + ")");
             txtCodigoCarga.setText(getMovimiento("Documento"));
             txtTotalLecturas.setText(getMovimiento("Unidades"));
 
@@ -132,5 +140,15 @@ public class BarcodeReader extends ActionBarActivity {
         private String getMovimiento(String column) {
             return cursor.getString(cursor.getColumnIndex(column));
         }        
-    }  
+    }
+    
+    private void leerCodigo(String barCode){
+        String code = barCode.substring(3,10);
+        if (dbAdapter.updateMovimientoArticuloSerie(code) > 0){
+            dbAdapter.updateMovimientoStock(code);
+            movStockAdapter.notifyDataSetChanged();
+        }else {
+            //TODO. La bobina no esta en la base de datos.
+        };
+    }
 }

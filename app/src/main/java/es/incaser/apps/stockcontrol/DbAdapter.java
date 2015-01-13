@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static es.incaser.apps.tools.Tools.getToday;
+
 
 public class DbAdapter extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "StockControl";
@@ -232,9 +234,9 @@ public class DbAdapter extends SQLiteOpenHelper {
     }
 
     public Cursor getMovArticuloSerieGuid(String movPosicion) {
-        String a= movPosicion;
-        Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"*"}, "MovPosicion='?'",
-                new String[]{movPosicion}, "", "", "");
+        String a= "'" + movPosicion + "'";
+        Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"*"}, "MovPosicion=?",
+                new String[]{a}, "", "", "");
         return cur;
     }
 
@@ -243,7 +245,29 @@ public class DbAdapter extends SQLiteOpenHelper {
                 new String[]{codigoEmpresa}, "", "", "FechaRegistro DESC");
     }
 
-    
+    public int updateMovimientoArticuloSerie(String numeroSerie) {
+        //numeroSerie = "'" + numeroSerie + "'";
+        ContentValues cv = new ContentValues();
+        cv.put("StatusAndroidSync", 1);
+        return db.update("MovimientoArticuloSerie", cv,"NumeroSerieLc = ?", new String[]{numeroSerie});
+        
+    }
+
+    public int updateMovimientoStock(String numeroSerie) {
+        //numeroSerie = "'" + numeroSerie + "'";
+        Cursor cursor = db.query("MovimientoArticuloSerie", new String[]{"MovPosicionOrigen"}, "StatusAndroidSync=? AND NumeroSerieLc=?",
+                new String[]{StatusSync.ESCANEADO, numeroSerie}, "", "", "");
+        if (cursor.moveToFirst()){
+            ContentValues cv = new ContentValues();
+            cv.put("FechaRegistro", getToday());
+            String movPosicionOrigen = cursor.getString(cursor.getColumnIndex("MovPosicionOrigen"));
+            //movPosicionOrigen = "'" + movPosicionOrigen + "'";
+            return db.update("MovimientoStock", cv,"MovPosicion = ?", new String[]{movPosicionOrigen});
+        }else {
+            return 0;
+        }
+    }
+
     //*******************************************************************************////
 
     public Cursor getMaquina(String id) {
