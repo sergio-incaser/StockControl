@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,21 +19,35 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 import es.incaser.apps.tools.Tools;
 
 
 public class BarcodeReader extends ActionBarActivity {
+    String tipoMov;
+    String serieMov;
+    String documentoMov;
     ImageButton btnReader;
+    ImageButton btnCamera;
     ListView lvMovimientoStock;
     MovStockAdapter movStockAdapter;
     DbAdapter dbAdapter;
     TextView txtBarcode;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode_reader);
+        
+        Bundle bundle = getIntent().getExtras();
+        tipoMov = bundle.getString("tipoMov");
+        serieMov = bundle.getString("serieMov","");
+        documentoMov = bundle.getString("documentoMov","");
+
         addListenerOnButtonRead();
+        linkButtonCamera();
         linkListViewMovimientoStock();
     }
 
@@ -80,10 +95,39 @@ public class BarcodeReader extends ActionBarActivity {
         movStockAdapter = new MovStockAdapter(this);
         lvMovimientoStock.setAdapter(movStockAdapter);
     }
+
+    public void linkButtonCamera() {
+        btnCamera = (ImageButton) findViewById(R.id.btn_camara);
+
+        btnCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getApplicationContext(),"Camera", Toast.LENGTH_SHORT).show();
+                new IntentIntegrator(BarcodeReader.this).initiateScan();
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        final IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        handleResult(scanResult);
+    }
+
+    private void handleResult(IntentResult scanResult) {
+        if (scanResult != null) {
+            updateUITextViews(scanResult.getContents(), scanResult.getFormatName());
+        } else {
+            Toast.makeText(this, "No se ha leído nada :(", Toast.LENGTH_SHORT).show();
+        }
+    }
     
-    
-    
-    
+    private void updateUITextViews(String scan_result, String scan_result_format) {
+        final EditText tvResult = (EditText)findViewById(R.id.txt_barcodeReader);
+        tvResult.setText(scan_result);
+        Linkify.addLinks(tvResult, Linkify.ALL);
+    }
+
     public class MovStockAdapter extends BaseAdapter{
         Context context;
         Cursor cursor;
@@ -91,7 +135,11 @@ public class BarcodeReader extends ActionBarActivity {
         public MovStockAdapter(Context ctx){
             context = ctx;
             dbAdapter = new DbAdapter(context);
-            cursor = dbAdapter.getMovimientoStock("1");
+            if (tipoMov.equals("1")){
+                cursor = dbAdapter.getMovimientoStock(MainActivity.codigoEmpresa, tipoMov);
+            }else {
+                cursor = dbAdapter.getMovimientoStock(MainActivity.codigoEmpresa, tipoMov, serieMov, documentoMov);
+            }
             cursor.moveToFirst();
         }
 
@@ -132,7 +180,13 @@ public class BarcodeReader extends ActionBarActivity {
             txtArticulo.setText(getMovimiento("CodigoArticulo"));
             txtMatricula.setText("(" + getMovimiento("MatriculaTransporte_") + ")");
             txtCodigoCarga.setText(getMovimiento("Documento"));
-            txtTotalLecturas.setText(getMovimiento("Unidades"));
+            int leidos = dbAdapter.getNumSerieLeidosCount(getMovimiento("MovPosicion"));
+            txtTotalLecturas.setText(Integer.toString(leidos) +" de " + getMovimiento("Unidades"));
+            if (leidos >= Integer.valueOf(getMovimiento("Unidades"))){
+                myView.findViewById(R.id.lay_item_movStock).setBackgroundColor(getResources().getColor(R.color.green));
+            }else {
+                myView.findViewById(R.id.lay_item_movStock).setBackgroundColor(getResources().getColor(R.color.white));
+            }
 
             return myView;
         }
@@ -144,11 +198,35 @@ public class BarcodeReader extends ActionBarActivity {
     
     private void leerCodigo(String barCode){
         String code = barCode.substring(3,10);
-        if (dbAdapter.updateMovimientoArticuloSerie(code) > 0){
-            dbAdapter.updateMovimientoStock(code);
-            movStockAdapter.notifyDataSetChanged();
+        if (tipoMov.equals("1")) {
+            if (dbAdapter.updateMovimientoArticuloSerie(code) > 0) {
+                Cursor cursor = dbAdapter.getMovArticuloSerieNumSerie(StatusSync.ESCANEADO, code);
+                dbAdapter.updateMovimientoStock(code);
+            } else {
+                //TODO. La bobina no esta en la base de datos.
+            }
         }else {
-            //TODO. La bobina no esta en la base de datos.
-        };
+            expedirBarcode(code);
+        }
+        movStockAdapter.cursor.requery();
+        movStockAdapter.notifyDataSetChanged();
     }
+    
+    private void expedirBarcode(String code){
+        Cursor cursor = dbAdapter.getArticulosSeries(MainActivity.codigoEmpresa, code);
+        if (cursor.getCount() > 0){
+            cursor.moveToFirst();
+            String codArticulo = cursor.getString(cursor.getColumnIndex("CodigoArticulo"));
+            String codTalla = cursor.getString(cursor.getColumnIndex("CodigoTalla01_"));
+            Cursor curMovStock = dbAdapter.getMovimientoStock(MainActivity.codigoEmpresa, tipoMov, serieMov, documentoMov, codArticulo, codTalla);
+            if (curMovStock.getCount()>0){
+                curMovStock.moveToFirst();
+                dbAdapter.createMovimientoArticuloSerie(curMovStock, code);
+            }else {
+                //TODO. bobina incorrecta
+                Toast.makeText(getApplicationContext(),R.string.msg_tipo_incorrecto, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    
 }

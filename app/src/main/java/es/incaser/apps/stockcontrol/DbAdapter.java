@@ -30,6 +30,7 @@ public class DbAdapter extends SQLiteOpenHelper {
             {"Articulos", "SELECT * FROM VIS_INC_ArticulosAndroid", ""},
             {"GrupoTallas_", "SELECT * FROM GrupoTallas_", ""},
             {"MovimientoStock", "SELECT * FROM VIS_INC_MovimientoStockAndroid", "StatusAndroidSync=1"},
+            {"ArticulosSeries", "SELECT * FROM VIS_INC_ArticulosSeriesAnd", ""},
             //{"INC_Incidencias", "SELECT * FROM INC_Incidencias", "INC_PendienteSync <> 0"},
             //Fin Tablas a importar
             //{"MArtSerie", "SELECT * FROM MovimientosArticuloSerie", "(FechaRegistro > GETDATE() - 3)"},
@@ -240,9 +241,32 @@ public class DbAdapter extends SQLiteOpenHelper {
         return cur;
     }
 
-    public Cursor getMovimientoStock(String codigoEmpresa) {
-        return db.query("MovimientoStock", new String[]{"*"}, "CodigoEmpresa=?",
-                new String[]{codigoEmpresa}, "", "", "FechaRegistro DESC");
+    public Cursor getMovimientoStock(String codigoEmpresa, String tipoMov) {
+        return db.query("MovimientoStock", new String[]{"*"}, "CodigoEmpresa=? AND TipoMovimiento=?",
+                new String[]{codigoEmpresa, tipoMov}, "", "", "FechaRegistro DESC");
+    }
+    public Cursor getMovimientoStock(String codigoEmpresa, String tipoMov, String serie, String documento) {
+        String sqlWhere = "CodigoEmpresa=? AND TipoMovimiento=? AND Serie=? AND Documento=?";
+        return db.query("MovimientoStock", new String[]{"*"}, sqlWhere,
+                new String[]{codigoEmpresa, tipoMov, serie, documento}, "", "", "FechaRegistro DESC");
+    }
+
+    public Cursor getMovimientoStock(String codigoEmpresa, String tipoMov, String serie, String documento, String codArticulo, String codTalla) {
+        String sqlWhere = "CodigoEmpresa=? AND TipoMovimiento=? AND Serie=? AND Documento=? AND CodigoArticulo=? AND CodigoTalla01_=?";
+        return db.query("MovimientoStock", new String[]{"*"}, sqlWhere,
+                new String[]{codigoEmpresa, tipoMov, serie, documento, codArticulo, codTalla}, "", "", "FechaRegistro DESC");
+    }
+
+    public Cursor getExpediciones(String codigoEmpresa) {
+        // MovimientosStock Distinct serie-documento
+        return db.query("MovimientoStock", new String[]{"*, SUM(Unidades) AS Unidades"}, "CodigoEmpresa=? AND TipoMovimiento=2",
+                new String[]{codigoEmpresa}, "CodigoEmpresa, Serie, Documento", "", "FechaRegistro");
+    }
+
+    public int getNumSerieLeidosCount(String movPosicion) {
+        Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"id"}, "MovPosicionOrigen=? AND StatusAndroidSync >= ?",
+                new String[]{movPosicion, StatusSync.ESCANEADO}, "", "", "");
+        return cur.getCount();
     }
 
     public int updateMovimientoArticuloSerie(String numeroSerie) {
@@ -250,22 +274,52 @@ public class DbAdapter extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("StatusAndroidSync", 1);
         return db.update("MovimientoArticuloSerie", cv,"NumeroSerieLc = ?", new String[]{numeroSerie});
-        
+    }
+
+    public long createMovimientoArticuloSerie(Cursor curMovStock, String numeroSerie) {
+        ContentValues cv = new ContentValues();
+        cv.put("CodigoEmpresa", MainActivity.codigoEmpresa);
+        cv.put("CodigoArticulo", curMovStock.getString(curMovStock.getColumnIndex("CodigoArticulo")));
+        cv.put("NumeroSerieLc", numeroSerie);
+        cv.put("OrigenDocumento", 11);
+        cv.put("EjercicioDocumento", curMovStock.getString(curMovStock.getColumnIndex("Ejercicio")));
+        cv.put("SerieDocumento", curMovStock.getString(curMovStock.getColumnIndex("Serie")));
+        cv.put("Documento", curMovStock.getString(curMovStock.getColumnIndex("Documento")));
+        cv.put("MovPosicionOrigen", curMovStock.getString(curMovStock.getColumnIndex("MovPosicion")));
+        cv.put("CodigoTalla01_", curMovStock.getString(curMovStock.getColumnIndex("CodigoTalla01_")));
+        cv.put("CodigoAlmacen", curMovStock.getString(curMovStock.getColumnIndex("CodigoAlmacen")));
+        cv.put("Ubicacion", curMovStock.getString(curMovStock.getColumnIndex("Ubicacion")));
+        cv.put("UnidadesSerie", 1);
+        cv.put("StatusAndroidSync", 1);
+        return db.insert("MovimientoArticuloSerie", null, cv);
+    }
+
+    
+    
+    public Cursor getArticulosSeries(String codigoEmpresa, String numeroSerie) {
+        return db.query("ArticulosSeries", new String[]{"*"}, "CodigoEmpresa=? AND NumeroSerieLc=?",
+                new String[]{codigoEmpresa, numeroSerie}, "", "", "");
     }
 
     public int updateMovimientoStock(String numeroSerie) {
+        int res = 0;
         //numeroSerie = "'" + numeroSerie + "'";
         Cursor cursor = db.query("MovimientoArticuloSerie", new String[]{"MovPosicionOrigen"}, "StatusAndroidSync=? AND NumeroSerieLc=?",
                 new String[]{StatusSync.ESCANEADO, numeroSerie}, "", "", "");
         if (cursor.moveToFirst()){
             ContentValues cv = new ContentValues();
-            cv.put("FechaRegistro", getToday());
+            cv.put("FechaRegistro", getToday("yyyy-MM-dd HH:mm:ss.S"));
             String movPosicionOrigen = cursor.getString(cursor.getColumnIndex("MovPosicionOrigen"));
             //movPosicionOrigen = "'" + movPosicionOrigen + "'";
-            return db.update("MovimientoStock", cv,"MovPosicion = ?", new String[]{movPosicionOrigen});
-        }else {
-            return 0;
-        }
+            res = db.update("MovimientoStock", cv, "MovPosicion = ?", new String[]{movPosicionOrigen});
+        };
+        return res;
+    }
+    
+    public Cursor getMovArticuloSerieNumSerie(String statusSync, String numeroSerie){
+        Cursor cursor = db.query("MovimientoArticuloSerie", new String[]{"MovPosicionOrigen"}, "StatusAndroidSync=? AND NumeroSerieLc=?",
+                new String[]{statusSync, numeroSerie}, "", "", "");
+        return cursor;
     }
 
     //*******************************************************************************////
@@ -284,11 +338,6 @@ public class DbAdapter extends SQLiteOpenHelper {
                 new String[]{codigoEmpresa, codigoEstablecimiento}, "", "", "");
     }
 
-//    public Cursor getUltimaRecaudacion(String codigoEmpresa, String codigoMaquina){
-//        String order = "INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC";
-//        return db.query("RecaudacionesAnteriores",new String[]{"*"},"CodigoEmpresa=? AND INC_CodigoMaquina=?",
-//                new String[]{codigoEmpresa, codigoMaquina},"","",order,"1");
-//    }
 
     public Cursor getPrestamosEstablecimiento(String codigoEmpresa, String codigoEstablecimiento) {
         return db.query("Prestamos", new String[]{"*"}, "CodigoEmpresa=? AND INC_CodigoEstablecimiento=?",

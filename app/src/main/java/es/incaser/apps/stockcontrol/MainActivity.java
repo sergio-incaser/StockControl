@@ -21,6 +21,7 @@ public class MainActivity extends ActionBarActivity {
     Timer timerSoft = new Timer();
     static int pref_hard_sync;
     static int pref_soft_sync;
+    static String codigoEmpresa = "1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void onClickButtons(View view){
         DbAdapter dbAdapter = new DbAdapter(getApplicationContext());
+        Intent intent;
         switch (view.getId()){
             case R.id.btn_sync:
                 //forzamos el proceso de sincronizacion de los movimientos
@@ -63,14 +65,22 @@ public class MainActivity extends ActionBarActivity {
 //                if (! dbAdapter.checkTables()){
 //                    dbAdapter.recreateDb();
 //                };
-                Intent intent = new Intent(this, BarcodeReader.class);
+                intent = new Intent(this, BarcodeReader.class);
+                intent.putExtra("tipoMov","1"); //Mov entrada
                 startActivity(intent);
                 break;
             case R.id.btn_entradas_libres:
                 dbAdapter.recreateDb();
                 break;
             case R.id.btn_expediciones:
+                intent = new Intent(this, Expediciones.class);
+                startActivity(intent);
+                break;
+            case R.id.btn_soft_sync:
                 launcSoftSync();
+                break;
+            case R.id.btn_hard_sync:
+                launchHardSync();
                 break;
         }
     }
@@ -121,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
         SQLConnection.database = pref.getString("pref_sql_database", "");
         pref_hard_sync = Integer.parseInt(pref.getString("pref_hard_sync", "0"));
         pref_soft_sync = Integer.parseInt(pref.getString("pref_soft_sync", "0"));
-
+        //TODO. Leer codigoEmpresa de preferebnces
     }
 
     @Override

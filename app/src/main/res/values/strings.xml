@@ -24,5 +24,7 @@
     <string name="pref_hard_sync">Intervalo Hard Sync(Segs.)</string>
     <string name="pref_soft_sync">Intervalo Soft Sync(Segs.)</string>
     <string name="title_activity_barcode_reader">Barcode Reader</string>
+    <string name="title_activity_expediciones">Expediciones</string>
+    <string name="msg_tipo_incorrecto">El número de serie no corresponde con el artículo seleccionado</string>
 
 </resources>

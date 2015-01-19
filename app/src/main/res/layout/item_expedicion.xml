@@ -6,7 +6,7 @@
     android:background="#ddd">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/lay_item_movStock"
+        android:id="@+id/lay_item_expedicion"
         android:padding="2dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,6 +18,25 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/EtiquetaSeparador"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fecha" />
+
+                <TextView
+                    android:id="@+id/tv_mov_stock_fecha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:textAlignment="gravity"
+                    android:text="01/01/xxxx" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -28,15 +47,15 @@
                     style="@style/EtiquetaSeparador"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Articulo" />
+                    android:text="Serie" />
 
                 <TextView
-                    android:id="@+id/tv_articulo"
+                    android:id="@+id/tv_mov_stock_serie"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:textAlignment="gravity"
-                    android:text="XX SAICA"
+                    android:text="SAICAXXX"
                     />
             </LinearLayout>
 
@@ -49,15 +68,15 @@
                     style="@style/EtiquetaSeparador"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Matricula" />
+                    android:text="Documento" />
 
                 <TextView
-                    android:id="@+id/tv_matricula"
+                    android:id="@+id/tv_mov_stock_documento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:textAlignment="gravity"
-                    android:text="ICR498498" />
+                    android:text="5xxxxxxxxx" />
             </LinearLayout>
 
             <LinearLayout
@@ -69,34 +88,15 @@
                     style="@style/EtiquetaSeparador"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cod. Carga" />
+                    android:text="Total" />
 
                 <TextView
-                    android:id="@+id/tv_codigoCarga"
+                    android:id="@+id/tv_mov_stock_unidades_total"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
                     android:textAlignment="gravity"
-                    android:text="58585858" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/EtiquetaSeparador"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Recibidos" />
-
-                <TextView
-                    android:id="@+id/tv_totalLecturas"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:textAlignment="gravity"
-                    android:text="1 de 15" />
+                    android:text="35" />
             </LinearLayout>
 
         </LinearLayout>

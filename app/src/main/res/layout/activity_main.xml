@@ -37,6 +37,35 @@
             android:layout_height="wrap_content"
             android:text="@string/btn_expediciones"
             android:onClick="onClickButtons"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            >
+        <Button
+            android:id="@+id/btn_soft_sync"
+            style="@style/BtnInit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Soft Sync"
+            android:onClick="onClickButtons"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            >
+            <Button
+                android:id="@+id/btn_hard_sync"
+                style="@style/BtnInit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hard Sync"
+                android:onClick="onClickButtons"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

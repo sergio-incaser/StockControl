@@ -27,9 +27,18 @@
                 android:inputType="number" />
             <ImageButton
                 android:id="@+id/btn_read"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/codigobarras"
+                android:maxWidth="120dp"
+                />
+            <ImageButton
+                android:id="@+id/btn_camara"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/codigobarras" />
+                android:src="@drawable/camara"
+                />
+
         </LinearLayout>
         <TextView
             android:layout_width="match_parent"

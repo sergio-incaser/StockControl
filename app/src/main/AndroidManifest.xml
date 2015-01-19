@@ -26,6 +26,10 @@
             android:name=".BarcodeReader"
             android:label="@string/title_activity_barcode_reader" >
         </activity>
+        <activity
+            android:name=".Expediciones"
+            android:label="@string/title_activity_expediciones" >
+        </activity>
     </application>
 
 </manifest>
