@@ -19,10 +19,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.concurrent.ThreadPoolExecutor;
-
-import es.incaser.apps.tools.Tools;
-
 
 public class BarcodeReader extends ActionBarActivity {
     String tipoMov;
@@ -81,7 +77,6 @@ public class BarcodeReader extends ActionBarActivity {
         btnReader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"Button pressed", Toast.LENGTH_SHORT).show();
                 if (txtBarcode.getText().toString().length() > 0){
                     leerCodigo(txtBarcode.getText().toString());
                 }
@@ -199,9 +194,10 @@ public class BarcodeReader extends ActionBarActivity {
     private void leerCodigo(String barCode){
         String code = barCode.substring(3,10);
         if (tipoMov.equals("1")) {
-            if (dbAdapter.updateMovimientoArticuloSerie(code) > 0) {
-                Cursor cursor = dbAdapter.getMovArticuloSerieNumSerie(StatusSync.ESCANEADO, code);
-                dbAdapter.updateMovimientoStock(code);
+            Cursor cur = dbAdapter.getMovArticuloSerieNumSerie(TipoMovimiento.origenMov(tipoMov),StatusSync.ESCANEADO, code);
+            if (cur.moveToFirst()) {
+                dbAdapter.updateMovimientoArticuloSerie(cur.getString(cur.getColumnIndex("MovPosicion")));
+                dbAdapter.updateMovimientoStock(cur.getString(cur.getColumnIndex("MovPosicionOrigen")));
             } else {
                 //TODO. La bobina no esta en la base de datos.
             }
@@ -221,7 +217,13 @@ public class BarcodeReader extends ActionBarActivity {
             Cursor curMovStock = dbAdapter.getMovimientoStock(MainActivity.codigoEmpresa, tipoMov, serieMov, documentoMov, codArticulo, codTalla);
             if (curMovStock.getCount()>0){
                 curMovStock.moveToFirst();
-                dbAdapter.createMovimientoArticuloSerie(curMovStock, code);
+                Cursor movArtSerie = dbAdapter.getMovArticuloSerieNumSerie(TipoMovimiento.origenMov(tipoMov), StatusSync.ESCANEADO, code);
+                if (movArtSerie.getCount() == 0){
+                    dbAdapter.createMovimientoArticuloSerie(curMovStock, code);
+                    dbAdapter.updateMovimientoStock(curMovStock.getString(curMovStock.getColumnIndex("MovPosicion")));
+                }else{
+                    Toast.makeText(getApplicationContext(),R.string.msg_articulo_escaneado, Toast.LENGTH_SHORT).show();
+                }
             }else {
                 //TODO. bobina incorrecta
                 Toast.makeText(getApplicationContext(),R.string.msg_tipo_incorrecto, Toast.LENGTH_SHORT).show();

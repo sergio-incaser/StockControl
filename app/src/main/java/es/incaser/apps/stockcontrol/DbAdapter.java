@@ -15,6 +15,7 @@ import java.sql.ResultSetMetaData;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static es.incaser.apps.tools.Tools.getToday;
 
@@ -22,7 +23,6 @@ import static es.incaser.apps.tools.Tools.getToday;
 public class DbAdapter extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "StockControl";
     private static final int DATABASE_VER = 1;
-    private static Connection conSQL;
     private SQLiteDatabase db;
     private static Context ctx;
     public static String[][] QUERY_LIST = {
@@ -219,12 +219,16 @@ public class DbAdapter extends SQLiteOpenHelper {
     public int updateStatusSync(String table, String oldStatus, String newStatus){
         ContentValues cv = new ContentValues();
         cv.put("StatusAndroidSync", newStatus);
+        SQLConnection conSQL = new SQLConnection();
+        cv.put("FechaRegistro", conSQL.getDate());
         return db.update(table, cv,"StatusAndroidSync=?", new String[]{oldStatus});
     }
 
     public int updateStatusSyncGuid(String table, String guidList, String newStatus){
         ContentValues cv = new ContentValues();
         cv.put("StatusAndroidSync", newStatus);
+        SQLConnection conSQL = new SQLConnection();
+        cv.put("FechaRegistro", conSQL.getDate());
         return db.update(table, cv,"MovPosicion in (?)", new String[]{guidList});
     }
     
@@ -269,11 +273,19 @@ public class DbAdapter extends SQLiteOpenHelper {
         return cur.getCount();
     }
 
+/*
     public int updateMovimientoArticuloSerie(String numeroSerie) {
         //numeroSerie = "'" + numeroSerie + "'";
         ContentValues cv = new ContentValues();
         cv.put("StatusAndroidSync", 1);
         return db.update("MovimientoArticuloSerie", cv,"NumeroSerieLc = ?", new String[]{numeroSerie});
+    }
+*/
+
+    public int updateMovimientoArticuloSerie(String movPosicion) {
+        ContentValues cv = new ContentValues();
+        cv.put("StatusAndroidSync", 1);
+        return db.update("MovimientoArticuloSerie", cv,"MovPosicion = ?", new String[]{movPosicion});
     }
 
     public long createMovimientoArticuloSerie(Cursor curMovStock, String numeroSerie) {
@@ -281,16 +293,17 @@ public class DbAdapter extends SQLiteOpenHelper {
         cv.put("CodigoEmpresa", MainActivity.codigoEmpresa);
         cv.put("CodigoArticulo", curMovStock.getString(curMovStock.getColumnIndex("CodigoArticulo")));
         cv.put("NumeroSerieLc", numeroSerie);
-        cv.put("OrigenDocumento", 11);
+        cv.put("OrigenDocumento", TipoMovimiento.ORIGEN_SALIDA);
         cv.put("EjercicioDocumento", curMovStock.getString(curMovStock.getColumnIndex("Ejercicio")));
         cv.put("SerieDocumento", curMovStock.getString(curMovStock.getColumnIndex("Serie")));
         cv.put("Documento", curMovStock.getString(curMovStock.getColumnIndex("Documento")));
+        cv.put("MovPosicion", UUID.randomUUID().toString());
         cv.put("MovPosicionOrigen", curMovStock.getString(curMovStock.getColumnIndex("MovPosicion")));
         cv.put("CodigoTalla01_", curMovStock.getString(curMovStock.getColumnIndex("CodigoTalla01_")));
         cv.put("CodigoAlmacen", curMovStock.getString(curMovStock.getColumnIndex("CodigoAlmacen")));
         cv.put("Ubicacion", curMovStock.getString(curMovStock.getColumnIndex("Ubicacion")));
         cv.put("UnidadesSerie", 1);
-        cv.put("StatusAndroidSync", 1);
+        cv.put("StatusAndroidSync", StatusSync.ESCANEADO);
         return db.insert("MovimientoArticuloSerie", null, cv);
     }
 
@@ -301,6 +314,7 @@ public class DbAdapter extends SQLiteOpenHelper {
                 new String[]{codigoEmpresa, numeroSerie}, "", "", "");
     }
 
+/*
     public int updateMovimientoStock(String numeroSerie) {
         int res = 0;
         //numeroSerie = "'" + numeroSerie + "'";
@@ -315,10 +329,18 @@ public class DbAdapter extends SQLiteOpenHelper {
         };
         return res;
     }
+*/
+
+    public int updateMovimientoStock(String movPosicion) {
+            ContentValues cv = new ContentValues();
+            cv.put("FechaRegistro", getToday("yyyy-MM-dd HH:mm:ss.S"));
+        return db.update("MovimientoStock", cv, "MovPosicion = ?", new String[]{movPosicion});
+    }
     
-    public Cursor getMovArticuloSerieNumSerie(String statusSync, String numeroSerie){
-        Cursor cursor = db.query("MovimientoArticuloSerie", new String[]{"MovPosicionOrigen"}, "StatusAndroidSync=? AND NumeroSerieLc=?",
-                new String[]{statusSync, numeroSerie}, "", "", "");
+    public Cursor getMovArticuloSerieNumSerie(String origenDoc, String statusSync, String numeroSerie){
+        String where = "OrigenDocumento=? AND StatusAndroidSync=? AND NumeroSerieLc=?";
+        Cursor cursor = db.query("MovimientoArticuloSerie", new String[]{"MovPosicionOrigen"}, where,
+                new String[]{origenDoc, statusSync, numeroSerie}, "", "", "");
         return cursor;
     }
 

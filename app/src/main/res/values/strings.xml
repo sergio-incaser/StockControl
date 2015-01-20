@@ -26,5 +26,6 @@
     <string name="title_activity_barcode_reader">Barcode Reader</string>
     <string name="title_activity_expediciones">Expediciones</string>
     <string name="msg_tipo_incorrecto">El número de serie no corresponde con el artículo seleccionado</string>
+    <string name="msg_articulo_escaneado">Este artículo ya está escaneado</string>
 
 </resources>

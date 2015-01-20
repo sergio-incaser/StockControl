@@ -11,5 +11,6 @@ public class StatusSync {
     public static String EXPORTANDO = "2";
     public static String EXPORTADO = "3";
     public static String SYNC_SAICA = "4";
+    public static String PARA_CREAR = "98";
     public static String NOT_INSQL = "99";
 }

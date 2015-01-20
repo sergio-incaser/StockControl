@@ -66,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
 //                    dbAdapter.recreateDb();
 //                };
                 intent = new Intent(this, BarcodeReader.class);
-                intent.putExtra("tipoMov","1"); //Mov entrada
+                intent.putExtra("tipoMov",TipoMovimiento.ENTRADA);
                 startActivity(intent);
                 break;
             case R.id.btn_entradas_libres:

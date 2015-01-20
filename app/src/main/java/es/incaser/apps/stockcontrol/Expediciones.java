@@ -40,7 +40,7 @@ public class Expediciones extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(view.getContext(), BarcodeReader.class);
-                intent.putExtra("tipoMov", "2"); //Mov salida
+                intent.putExtra("tipoMov", TipoMovimiento.SALIDA);
                 Cursor cursor = (Cursor) movStockAdapter.getItem(position);
                 intent.putExtra("serieMov", cursor.getString(cursor.getColumnIndex("Serie")));
                 intent.putExtra("documentoMov", cursor.getString(cursor.getColumnIndex("Documento")));
