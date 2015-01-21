@@ -34,11 +34,17 @@ public class TimerTaskSoft extends TimerTask{
             if (SQLConnection.connection == null) {
                 msg.obj = "errorSQLconnection";
             }
-            if (syncData.exportMovArticuloSerie(syncDate) >= 0) {
-                msg.obj = "Export Articulos serie";
+            if (syncData.exportMovArticuloSerie(TipoMovimiento.ENTRADA, syncDate) >= 0) {
+                msg.obj = "Export Articulos serie recepcion";
             } else {
                 msg.obj = "ERROR EN LA SINCRONIZACION";
             }
+            if (syncData.exportMovArticuloSerie(TipoMovimiento.SALIDA, syncDate) >= 0) {
+                msg.obj = "Export Articulos serie expediciones";
+            } else {
+                msg.obj = "ERROR EN LA SINCRONIZACION";
+            }
+
             String lastSyncDate = pref.getString("pref_last_sync", "2000-01-01 00:00:00.0");
             if (syncData.importMovArticuloSerie(lastSyncDate)){
                 msg.obj = "Import MovimientoArticuloSerie";

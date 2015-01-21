@@ -94,17 +94,18 @@ public class SQLConnection {
     
     public String getDate(){
         ResultSet rs = getResultset("SELECT GETDATE()");
+        String res  = "2000-01-01 00:00:00.0";
         try {
             if (rs.next()){
-                return rs.getString(1);
+                res = rs.getString(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return "2000-01-01 00:00:00.0";
+        return res;
     }
     
-    public String getGuidsInexistentes(ArrayList<String> guidList){
+    public ArrayList<String> getGuidsInexistentes(ArrayList<String> guidList){
         ResultSet rs = getResultset("SELECT MovPosicion FROM MovimientoArticuloSerie " +
                 "WHERE MovPosicion IN (" + TextUtils.join(",", guidList) + ")");
         try {
@@ -114,15 +115,16 @@ public class SQLConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return TextUtils.join(",", guidList);
+        return  guidList;
     };
 
     public int updateSQL(String query) {
+        int res = 0;
         try {
-            return statementWrite.executeUpdate(query);
+            res = statementWrite.executeUpdate(query);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-        return 0;
+        return res;
     }
 }

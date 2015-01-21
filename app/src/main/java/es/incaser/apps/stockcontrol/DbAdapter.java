@@ -6,16 +6,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import es.incaser.apps.tools.Tools;
 
 import static es.incaser.apps.tools.Tools.getToday;
 
@@ -36,7 +40,7 @@ public class DbAdapter extends SQLiteOpenHelper {
             //{"MArtSerie", "SELECT * FROM MovimientosArticuloSerie", "(FechaRegistro > GETDATE() - 3)"},
             {"MovimientoArticuloSerie", "SELECT * FROM VIS_INC_MovArticuloSerieAnd", "(FechaRegistro > '2014-12-23') AND StatusAndroidSync=1"},
     };
-    public static int tablesToImport = 4; // Modificar en caso de añadir mas tablas
+    public static int tablesToImport = 5; // Modificar en caso de añadir mas tablas
     public static int tablesToExport = 4; // Exportar tablas a partir de este indice
     private SQLConnection sqlConnection;
 
@@ -224,14 +228,32 @@ public class DbAdapter extends SQLiteOpenHelper {
         return db.update(table, cv,"StatusAndroidSync=?", new String[]{oldStatus});
     }
 
-    public int updateStatusSyncGuid(String table, String guidList, String newStatus){
+    public int updateStatusSync(String table, String tipoMov, String oldStatus, String newStatus){
         ContentValues cv = new ContentValues();
         cv.put("StatusAndroidSync", newStatus);
         SQLConnection conSQL = new SQLConnection();
         cv.put("FechaRegistro", conSQL.getDate());
-        return db.update(table, cv,"MovPosicion in (?)", new String[]{guidList});
+        return db.update(table, cv,"OrigenDocumento=? AND StatusAndroidSync=?",
+                new String[]{TipoMovimiento.origenMov(tipoMov), oldStatus});
     }
-    
+
+    public int updateStatusSyncGuid(String table, String guid, String newStatus){
+        ContentValues cv = new ContentValues();
+        cv.put("StatusAndroidSync", newStatus);
+        //SQLConnection conSQL = new SQLConnection();
+        //cv.put("FechaRegistro", conSQL.getDate());
+        return db.update(table, cv,"MovPosicion=?", new String[]{guid});
+    }
+
+    public int updateStatusSyncGuid(String table, ArrayList<String> guidList, String newStatus){
+        ContentValues cv = new ContentValues();
+        cv.put("StatusAndroidSync", newStatus);
+        SQLConnection conSQL = new SQLConnection();
+        cv.put("FechaRegistro", conSQL.getDate());
+        String strList = TextUtils.join(",", guidList).replace("'", "");
+        return db.update(table, cv, "MovPosicion in (?)", new String[]{strList});
+    }
+
     public Cursor getMovArticuloSerie(String statusSync) {
         Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"*"}, "StatusAndroidSync=?",
                 new String[]{statusSync}, "", "", "");
@@ -293,6 +315,9 @@ public class DbAdapter extends SQLiteOpenHelper {
         cv.put("CodigoEmpresa", MainActivity.codigoEmpresa);
         cv.put("CodigoArticulo", curMovStock.getString(curMovStock.getColumnIndex("CodigoArticulo")));
         cv.put("NumeroSerieLc", numeroSerie);
+        cv.put("Fecha", Tools.getToday());
+        //TODO: REVISAR SINCRONIZACION DE RELOJ
+        //cv.put("FechaRegistro", Tools.getTimeStamp());
         cv.put("OrigenDocumento", TipoMovimiento.ORIGEN_SALIDA);
         cv.put("EjercicioDocumento", curMovStock.getString(curMovStock.getColumnIndex("Ejercicio")));
         cv.put("SerieDocumento", curMovStock.getString(curMovStock.getColumnIndex("Serie")));

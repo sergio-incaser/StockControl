@@ -72,7 +72,7 @@ public class SyncData {
         return numReg;
     }
 
-    public int exportMovArticuloSerie(String syncDate) {
+    public int exportMovArticuloSerieXXX(String syncDate) {
         ArrayList <String> guidListRec = new ArrayList<String>();
         ArrayList <String> guidListExp = new ArrayList<String>();
         int numReg = dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.ESCANEADO, StatusSync.EXPORTANDO);
@@ -113,10 +113,10 @@ public class SyncData {
                 dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.EXPORTANDO, StatusSync.EXPORTADO);
             };
 */
-            // Actualiza 
+            // Actualiza
             updateStatusMoves(syncDate, guidListRec, numRegRec, StatusSync.NOT_INSQL);
             //TODO. diferencia de bobinas. Que pasa con las bobinas NOT_INSQL???
-            
+
             updateStatusMoves(syncDate, guidListExp, numRegExp, StatusSync.PARA_CREAR);
 
             Cursor movArtSerie = dbAdapter.getMovArticuloSerie(StatusSync.PARA_CREAR);
@@ -128,17 +128,51 @@ public class SyncData {
         return numReg;
     }
 
+    
+    
+    public int exportMovArticuloSerie(String tipoMov, String syncDate) {
+        ArrayList <String> guidList = new ArrayList<String>();
+        int numReg = dbAdapter.updateStatusSync("MovimientoArticuloSerie", tipoMov, StatusSync.ESCANEADO, StatusSync.EXPORTANDO);
+        if (numReg > 0){
+            Cursor cursor = dbAdapter.getMovArticuloSerie(StatusSync.EXPORTANDO);
+            Log.w("Exportando "+tipoMov,String.valueOf(cursor.getCount()));
+            while (cursor.moveToNext()) {
+                guidList.add("'" + cursor.getString(cursor.getColumnIndex("MovPosicion")) + "'");
+            };
+
+            // Actualiza 
+            if (tipoMov.equals(TipoMovimiento.ENTRADA)){
+                updateStatusMoves(syncDate, guidList, numReg, StatusSync.NOT_INSQL);
+                //TODO. diferencia de bobinas. Que pasa con las bobinas NOT_INSQL???
+            }
+            if (tipoMov.equals(TipoMovimiento.SALIDA)) {
+                updateStatusMoves(syncDate, guidList, numReg, StatusSync.PARA_CREAR);
+                Cursor movArtSerie = dbAdapter.getMovArticuloSerie(StatusSync.PARA_CREAR);
+                if (copyRecords(movArtSerie, "MovimientoArticuloSerie", conSQL.getResultset("SELECT * FROM MovimientoArticuloSerie WHERE 1=2",true)) > 0){
+                    int x = dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.PARA_CREAR, StatusSync.EXPORTADO);
+                    Log.w("Update PARA_CREAR -> EXPORTADO ", String.valueOf(x));
+                };
+            }
+        };
+        return numReg;
+    }
+
     void updateStatusMoves(String syncDate, ArrayList <String> guidList, int numReg, String statusNotExist){
         String guidListStr = TextUtils.join(",",guidList);
+        int x = 0;
         if (conSQL.updateSQL("UPDATE MovimientoArticuloSerie SET StatusAndroidSync="+StatusSync.EXPORTADO+", " +
                 "FechaRegistro = " + date2Sql(syncDate) + " WHERE MovPosicion IN (" + guidListStr + ")") == numReg){
             //Correcto
-            dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie", guidListStr , StatusSync.EXPORTADO);
-            
+            x = dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie", guidList , StatusSync.EXPORTADO);
+            Log.w("Update EXPORTADO Coinciden registros ", String.valueOf(x) + " / " +guidList);
+
         }else{
-            String guidListInexist = conSQL.getGuidsInexistentes(guidList);
-            dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie", guidListInexist, statusNotExist);
-            dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.EXPORTANDO, StatusSync.EXPORTADO);
+            ArrayList<String> guidListInexist = conSQL.getGuidsInexistentes(guidList);
+            x = dbAdapter.updateStatusSyncGuid("MovimientoArticuloSerie", guidListInexist, statusNotExist);
+            Log.w("Update TipoMov:"+statusNotExist, String.valueOf(x) + " / " +guidListInexist);
+            x = dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.EXPORTANDO, StatusSync.EXPORTADO);
+            Log.w("Update EXPORTANDO -> EXPORTADO ", String.valueOf(x));
+
         };
     }
     
@@ -222,8 +256,12 @@ public class SyncData {
                 }
                 for (String col : columnListDate) {
                     colInt = source.getColumnIndex(col);
-                    Date dateSql = new Date(str2date(source.getString(colInt), "yyyy-MM-dd HH:mm:ss").getTime());
-                    target.updateDate(col, dateSql);
+                    if (source.getString(colInt) == null){
+                        //target.updateDate(col, null);
+                    }else {
+                        Date dateSql = new Date(str2date(source.getString(colInt), "yyyy-MM-dd HH:mm:ss").getTime());
+                        target.updateDate(col, dateSql);
+                    }
                 }
                 for (String col : columnListBynary) {
                     colInt = source.getColumnIndex(col);
@@ -245,7 +283,7 @@ public class SyncData {
             Log.w(tableSource, "Exportados: " + source.getCount());
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
-            return -1;
+            numReg = -1;
         }
         return numReg;
     }
