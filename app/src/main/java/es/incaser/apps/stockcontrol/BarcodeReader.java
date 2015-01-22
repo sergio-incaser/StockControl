@@ -173,7 +173,8 @@ public class BarcodeReader extends ActionBarActivity {
             TextView txtTotalLecturas = (TextView) myView.findViewById(R.id.tv_totalLecturas);
 
             txtArticulo.setText(getMovimiento("CodigoArticulo"));
-            txtMatricula.setText("(" + getMovimiento("MatriculaTransporte_") + ")");
+            txtMatricula.setText("(" + getMovimiento("FechaRegistro") + ")");
+//            txtMatricula.setText("(" + getMovimiento("MatriculaTransporte_") + ")");
             txtCodigoCarga.setText(getMovimiento("Documento"));
             int leidos = dbAdapter.getNumSerieLeidosCount(getMovimiento("MovPosicion"));
             txtTotalLecturas.setText(Integer.toString(leidos) +" de " + getMovimiento("Unidades"));
@@ -193,8 +194,8 @@ public class BarcodeReader extends ActionBarActivity {
     
     private void leerCodigo(String barCode){
         String code = barCode.substring(3,10);
-        if (tipoMov.equals("1")) {
-            Cursor cur = dbAdapter.getMovArticuloSerieNumSerie(TipoMovimiento.origenMov(tipoMov),StatusSync.ESCANEADO, code);
+        if (tipoMov.equals(TipoMovimiento.ENTRADA)) {
+            Cursor cur = dbAdapter.getMovArticuloSerieNumSerie(TipoMovimiento.origenMov(tipoMov), code);
             if (cur.moveToFirst()) {
                 dbAdapter.updateMovimientoArticuloSerie(cur.getString(cur.getColumnIndex("MovPosicion")));
                 dbAdapter.updateMovimientoStock(cur.getString(cur.getColumnIndex("MovPosicionOrigen")));
@@ -217,7 +218,7 @@ public class BarcodeReader extends ActionBarActivity {
             Cursor curMovStock = dbAdapter.getMovimientoStock(MainActivity.codigoEmpresa, tipoMov, serieMov, documentoMov, codArticulo, codTalla);
             if (curMovStock.getCount()>0){
                 curMovStock.moveToFirst();
-                Cursor movArtSerie = dbAdapter.getMovArticuloSerieNumSerie(TipoMovimiento.origenMov(tipoMov), StatusSync.ESCANEADO, code);
+                Cursor movArtSerie = dbAdapter.getMovArticuloSerieNumSerie(TipoMovimiento.origenMov(tipoMov), code);
                 if (movArtSerie.getCount() == 0){
                     dbAdapter.createMovimientoArticuloSerie(curMovStock, code);
                     dbAdapter.updateMovimientoStock(curMovStock.getString(curMovStock.getColumnIndex("MovPosicion")));

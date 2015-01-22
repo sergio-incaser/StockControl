@@ -151,6 +151,8 @@ public class SyncData {
                 if (copyRecords(movArtSerie, "MovimientoArticuloSerie", conSQL.getResultset("SELECT * FROM MovimientoArticuloSerie WHERE 1=2",true)) > 0){
                     int x = dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.PARA_CREAR, StatusSync.EXPORTADO);
                     Log.w("Update PARA_CREAR -> EXPORTADO ", String.valueOf(x));
+                    x = conSQL.updateSQL("UPDATE MovimientoArticuloSerie SET StatusAndroidSync="+StatusSync.EXPORTADO+", " +
+                            "FechaRegistro = " + date2Sql(syncDate) + " WHERE StatusAndroidSync='" + StatusSync.PARA_CREAR + "'");
                 };
             }
         };

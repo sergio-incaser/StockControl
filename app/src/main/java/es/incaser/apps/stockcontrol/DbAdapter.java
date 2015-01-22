@@ -254,6 +254,22 @@ public class DbAdapter extends SQLiteOpenHelper {
         return db.update(table, cv, "MovPosicion in (?)", new String[]{strList});
     }
 
+    
+/*
+    public int updateMovimientoArticuloSerie(String numeroSerie) {
+        //numeroSerie = "'" + numeroSerie + "'";
+        ContentValues cv = new ContentValues();
+        cv.put("StatusAndroidSync", 1);
+        return db.update("MovimientoArticuloSerie", cv,"NumeroSerieLc = ?", new String[]{numeroSerie});
+    }
+*/
+
+    public int updateMovimientoArticuloSerie(String movPosicion) {
+        ContentValues cv = new ContentValues();
+        cv.put("StatusAndroidSync", StatusSync.ESCANEADO);
+        return db.update("MovimientoArticuloSerie", cv,"MovPosicion = ?", new String[]{movPosicion});
+    }
+    
     public Cursor getMovArticuloSerie(String statusSync) {
         Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"*"}, "StatusAndroidSync=?",
                 new String[]{statusSync}, "", "", "");
@@ -295,20 +311,7 @@ public class DbAdapter extends SQLiteOpenHelper {
         return cur.getCount();
     }
 
-/*
-    public int updateMovimientoArticuloSerie(String numeroSerie) {
-        //numeroSerie = "'" + numeroSerie + "'";
-        ContentValues cv = new ContentValues();
-        cv.put("StatusAndroidSync", 1);
-        return db.update("MovimientoArticuloSerie", cv,"NumeroSerieLc = ?", new String[]{numeroSerie});
-    }
-*/
 
-    public int updateMovimientoArticuloSerie(String movPosicion) {
-        ContentValues cv = new ContentValues();
-        cv.put("StatusAndroidSync", 1);
-        return db.update("MovimientoArticuloSerie", cv,"MovPosicion = ?", new String[]{movPosicion});
-    }
 
     public long createMovimientoArticuloSerie(Cursor curMovStock, String numeroSerie) {
         ContentValues cv = new ContentValues();
@@ -362,10 +365,10 @@ public class DbAdapter extends SQLiteOpenHelper {
         return db.update("MovimientoStock", cv, "MovPosicion = ?", new String[]{movPosicion});
     }
     
-    public Cursor getMovArticuloSerieNumSerie(String origenDoc, String statusSync, String numeroSerie){
-        String where = "OrigenDocumento=? AND StatusAndroidSync=? AND NumeroSerieLc=?";
-        Cursor cursor = db.query("MovimientoArticuloSerie", new String[]{"MovPosicionOrigen"}, where,
-                new String[]{origenDoc, statusSync, numeroSerie}, "", "", "");
+    public Cursor getMovArticuloSerieNumSerie(String origenDoc, String numeroSerie){
+        String where = "OrigenDocumento=? AND NumeroSerieLc=?";
+        Cursor cursor = db.query("MovimientoArticuloSerie", new String[]{"MovPosicion","MovPosicionOrigen"}, where,
+                new String[]{origenDoc, numeroSerie}, "", "", "");
         return cursor;
     }
 
