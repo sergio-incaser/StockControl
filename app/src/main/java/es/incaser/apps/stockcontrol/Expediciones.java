@@ -12,15 +12,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import es.incaser.apps.tools.Tools;
 
 import static es.incaser.apps.tools.Tools.date2str;
 import static es.incaser.apps.tools.Tools.dateStr2str;
 
 
-public class Expediciones extends ActionBarActivity {
+public class Expediciones extends ActionBarActivity{
     ListView lvMovimientoStock;
     MovStockAdapter movStockAdapter;
     DbAdapter dbAdapter;
@@ -30,25 +35,15 @@ public class Expediciones extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expediciones);
         linkListViewMovimientoStock();
+        
     }
 
     public void linkListViewMovimientoStock(){
         lvMovimientoStock = (ListView) findViewById(R.id.lv_expediciones);
         movStockAdapter = new MovStockAdapter(this);
         lvMovimientoStock.setAdapter(movStockAdapter);
-        lvMovimientoStock.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(view.getContext(), BarcodeReader.class);
-                intent.putExtra("tipoMov", TipoMovimiento.SALIDA);
-                Cursor cursor = (Cursor) movStockAdapter.getItem(position);
-                intent.putExtra("serieMov", cursor.getString(cursor.getColumnIndex("Serie")));
-                intent.putExtra("documentoMov", cursor.getString(cursor.getColumnIndex("Documento")));
-
-                startActivity(intent);
-            }
-        });
     }
+    
     
 
     @Override
@@ -72,7 +67,9 @@ public class Expediciones extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    public class MovStockAdapter extends BaseAdapter {
+
+
+    public class MovStockAdapter extends BaseAdapter implements View.OnClickListener{
         Context context;
         Cursor cursor;
 
@@ -111,11 +108,15 @@ public class Expediciones extends ActionBarActivity {
                 myView = convertView;
             }
             cursor.moveToPosition(position);
+            
+            myView.setOnClickListener(this);
 
             TextView txtFecha = (TextView) myView.findViewById(R.id.tv_mov_stock_fecha);
             TextView txtSerie = (TextView) myView.findViewById(R.id.tv_mov_stock_serie);
             TextView txtDocumento = (TextView) myView.findViewById(R.id.tv_mov_stock_documento);
             TextView txtTotalArticulos = (TextView) myView.findViewById(R.id.tv_mov_stock_unidades_total);
+            Button btn = (Button) myView.findViewById(R.id.btn_asignar_transporte);
+            btn.setOnClickListener(this);
 
             txtFecha.setText(dateStr2str(getMovimiento("Fecha")));
             txtSerie.setText(getMovimiento("Serie"));
@@ -128,5 +129,47 @@ public class Expediciones extends ActionBarActivity {
         public String getMovimiento(String column) {
             return cursor.getString(cursor.getColumnIndex(column));
         }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_asignar_transporte:
+                    Toast.makeText(v.getContext(), "Boton Click", Toast.LENGTH_SHORT).show();
+                    Intent intentSearch = new Intent(v.getContext(),Search.class);
+                    intentSearch.putExtra("tabla", "TRA_Vehiculos");
+                    intentSearch.putExtra("campoBusqueda", "Matricula");
+                    intentSearch.putExtra("campoRetorno", "Matricula");
+                    intentSearch.putExtra("tipoMov", TipoMovimiento.SALIDA);
+                    intentSearch.putExtra("serieMov", cursor.getString(cursor.getColumnIndex("Serie")));
+                    intentSearch.putExtra("documentoMov", cursor.getString(cursor.getColumnIndex("Documento")));
+                    startActivityForResult(intentSearch, 1);
+                    break;
+                default:
+                    Intent intent = new Intent(v.getContext(), BarcodeReader.class);
+                    intent.putExtra("tipoMov", TipoMovimiento.SALIDA);
+                    intent.putExtra("serieMov", cursor.getString(cursor.getColumnIndex("Serie")));
+                    intent.putExtra("documentoMov", cursor.getString(cursor.getColumnIndex("Documento")));
+                    startActivity(intent);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK){
+                String id = data.getStringExtra("id");
+                String matricula = data.getStringExtra("Matricula");
+                String tipoMov = data.getStringExtra("tipoMov");
+                String serieMov = data.getStringExtra("serieMov");
+                String documentoMov = data.getStringExtra("documentoMov");
+                dbAdapter.updateMovimientoStock(tipoMov, serieMov, documentoMov, "Matricula", matricula);
+            }
+            if (resultCode == RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

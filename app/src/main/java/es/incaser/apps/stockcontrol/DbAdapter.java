@@ -35,13 +35,16 @@ public class DbAdapter extends SQLiteOpenHelper {
             {"GrupoTallas_", "SELECT * FROM GrupoTallas_", ""},
             {"MovimientoStock", "SELECT * FROM VIS_INC_MovimientoStockAndroid", "StatusAndroidSync=1"},
             {"ArticulosSeries", "SELECT * FROM VIS_INC_ArticulosSeriesAnd", ""},
+            {"TRA_Vehiculos", "SELECT * FROM VIS_AND_Vehiculos", ""},
+            {"TRA_Remolques", "SELECT * FROM VIS_AND_Remolques", ""},
+            {"Choferes", "SELECT * FROM VIS_AND_Choferes", ""},
             //{"INC_Incidencias", "SELECT * FROM INC_Incidencias", "INC_PendienteSync <> 0"},
             //Fin Tablas a importar
             //{"MArtSerie", "SELECT * FROM MovimientosArticuloSerie", "(FechaRegistro > GETDATE() - 3)"},
             {"MovimientoArticuloSerie", "SELECT * FROM VIS_INC_MovArticuloSerieAnd", "(FechaRegistro > '2014-12-23') AND StatusAndroidSync=1"},
     };
-    public static int tablesToImport = 5; // Modificar en caso de añadir mas tablas
-    public static int tablesToExport = 4; // Exportar tablas a partir de este indice
+    public static int tablesToImport = 8; // Modificar en caso de añadir mas tablas
+    public static int tablesToExport = 7; // Exportar tablas a partir de este indice
     private SQLConnection sqlConnection;
 
     public DbAdapter(Context context) {
@@ -360,9 +363,16 @@ public class DbAdapter extends SQLiteOpenHelper {
 */
 
     public int updateMovimientoStock(String movPosicion) {
-            ContentValues cv = new ContentValues();
-            cv.put("FechaRegistro", getToday("yyyy-MM-dd HH:mm:ss.S"));
+        ContentValues cv = new ContentValues();
+        cv.put("FechaRegistro", getToday("yyyy-MM-dd HH:mm:ss.S"));
         return db.update("MovimientoStock", cv, "MovPosicion = ?", new String[]{movPosicion});
+    }
+
+    public int updateMovimientoStock(String tipoMov, String serie, String documento, String campo, String valor) {
+        ContentValues cv = new ContentValues();
+        cv.put("FechaRegistro", getToday("yyyy-MM-dd HH:mm:ss.S"));
+        cv.put(campo, valor);
+        return db.update("MovimientoStock", cv, "TipoMovimiento=? AND Serie=? AND Documento=?", new String[]{tipoMov, serie, documento});
     }
     
     public Cursor getMovArticuloSerieNumSerie(String origenDoc, String numeroSerie){
@@ -371,6 +381,15 @@ public class DbAdapter extends SQLiteOpenHelper {
                 new String[]{origenDoc, numeroSerie}, "", "", "");
         return cursor;
     }
+
+    public Cursor getBusqueda(String tabla, String campoBusqueda, String campoRetorno, String searchText){
+        searchText = "%" + searchText +"%";
+        String where = campoBusqueda + " like ?";
+        Cursor cursor = db.query(tabla, new String[]{"id", campoRetorno}, where,
+                new String[]{searchText}, "", "", campoRetorno);
+        return cursor;
+    }
+
 
     //*******************************************************************************////
 
