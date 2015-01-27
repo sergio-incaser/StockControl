@@ -19,10 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import es.incaser.apps.tools.Tools;
-
-import static es.incaser.apps.tools.Tools.getToday;
-
 
 public class DbAdapter extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "StockControl";
@@ -364,13 +360,13 @@ public class DbAdapter extends SQLiteOpenHelper {
 
     public int updateMovimientoStock(String movPosicion) {
         ContentValues cv = new ContentValues();
-        cv.put("FechaRegistro", getToday("yyyy-MM-dd HH:mm:ss.S"));
+        cv.put("FechaRegistro", Tools.getToday("yyyy-MM-dd HH:mm:ss.S"));
         return db.update("MovimientoStock", cv, "MovPosicion = ?", new String[]{movPosicion});
     }
 
     public int updateMovimientoStock(String tipoMov, String serie, String documento, String campo, String valor) {
         ContentValues cv = new ContentValues();
-        cv.put("FechaRegistro", getToday("yyyy-MM-dd HH:mm:ss.S"));
+        cv.put("FechaRegistro", Tools.getToday("yyyy-MM-dd HH:mm:ss.S"));
         cv.put(campo, valor);
         return db.update("MovimientoStock", cv, "TipoMovimiento=? AND Serie=? AND Documento=?", new String[]{tipoMov, serie, documento});
     }
