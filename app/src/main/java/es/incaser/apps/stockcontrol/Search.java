@@ -12,14 +12,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import static es.incaser.apps.tools.Tools.dateStr2str;
 
 
 public class Search extends ActionBarActivity implements TextWatcher{
@@ -47,6 +44,12 @@ public class Search extends ActionBarActivity implements TextWatcher{
         lv_search = (ListView) findViewById(R.id.lv_result_search);
         searchAdapter = new SearchAdapter(this);
         lv_search.setAdapter(searchAdapter);
+        lv_search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onClickItem(view, position);
+            }
+        });
 
 
     }
@@ -90,7 +93,7 @@ public class Search extends ActionBarActivity implements TextWatcher{
         searchAdapter.notifyDataSetChanged();
     }
 
-    public class SearchAdapter extends BaseAdapter implements View.OnClickListener{
+    public class SearchAdapter extends BaseAdapter {
         Context context;
         Cursor cursor;
 
@@ -133,25 +136,23 @@ public class Search extends ActionBarActivity implements TextWatcher{
                 myView = convertView;
             }
             cursor.moveToPosition(position);
-            myView.setOnClickListener(this);
+            //myView.setOnClickListener(this);
             TextView tvName = (TextView) myView.findViewById(R.id.tv_item_search);
-            tvName.setText(cursor.getString(cursor.getColumnIndex(campoRetorno)));
+            tvName.setText(cursor.getString(cursor.getColumnIndex(campoBusqueda)));
             return myView;
         }
-
-
-        @Override
-        public void onClick(View v) {
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("id",cursor.getString(0));
-            returnIntent.putExtra(campoRetorno, cursor.getString(cursor.getColumnIndex(campoRetorno)));
-            returnIntent.putExtra("tipoMov",bundleOrig.getString("tipoMov"));
-            returnIntent.putExtra("serieMov",bundleOrig.getString("serieMov"));
-            returnIntent.putExtra("documentoMov",bundleOrig.getString("documentoMov"));
-
-            
-            setResult(RESULT_OK,returnIntent);
-            finish();
-        }
-    }    
+    }
+    public void onClickItem(View v, int position) {
+        Intent returnIntent = new Intent();
+        Cursor cur = (Cursor) searchAdapter.getItem(position);
+        returnIntent.putExtra("id",cur.getString(0));
+        returnIntent.putExtra("campoRetorno", campoRetorno);
+        returnIntent.putExtra("valorRetorno", cur.getString(cur.getColumnIndex(campoRetorno)));
+        returnIntent.putExtra("tipoMov",bundleOrig.getString("tipoMov"));
+        returnIntent.putExtra("serieMov",bundleOrig.getString("serieMov"));
+        returnIntent.putExtra("documentoMov",bundleOrig.getString("documentoMov"));
+        setResult(RESULT_OK,returnIntent);
+        finish();
+    }
+    
 }

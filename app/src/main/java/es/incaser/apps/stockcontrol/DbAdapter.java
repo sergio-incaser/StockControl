@@ -300,7 +300,8 @@ public class DbAdapter extends SQLiteOpenHelper {
 
     public Cursor getExpediciones(String codigoEmpresa) {
         // MovimientosStock Distinct serie-documento
-        return db.query("MovimientoStock", new String[]{"*, SUM(Unidades) AS Unidades"}, "CodigoEmpresa=? AND TipoMovimiento=2",
+        String table = "MovimientoStock LEFT JOIN Choferes ON MovimientoStock.CodigoChofer=Choferes.CodigoChofer";
+        return db.query(table, new String[]{"*, SUM(Unidades) AS Unidades"}, "CodigoEmpresa=? AND TipoMovimiento=2",
                 new String[]{codigoEmpresa}, "CodigoEmpresa, Serie, Documento", "", "FechaRegistro");
     }
 
@@ -381,7 +382,7 @@ public class DbAdapter extends SQLiteOpenHelper {
     public Cursor getBusqueda(String tabla, String campoBusqueda, String campoRetorno, String searchText){
         searchText = "%" + searchText +"%";
         String where = campoBusqueda + " like ?";
-        Cursor cursor = db.query(tabla, new String[]{"id", campoRetorno}, where,
+        Cursor cursor = db.query(tabla, new String[]{"id", campoBusqueda, campoRetorno}, where,
                 new String[]{searchText}, "", "", campoRetorno);
         return cursor;
     }

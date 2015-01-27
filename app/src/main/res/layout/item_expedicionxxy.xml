@@ -117,13 +117,27 @@
                                 android:layout_height="match_parent"
                                 style="@style/etiquetasCuadro"
                                 android:text="Matrícula"/>
-                            <TextView
-                                android:id="@+id/tv_mov_stock_matricula"
+                            <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                style="@style/datosCuadros"
-                                android:gravity="left"
-                                android:text="5526 BCC"/>
+                                android:layout_height="wrap_content"
+                                >
+                                <EditText
+                                    android:id="@+id/tv_mov_stock_matricula"
+                                    android:layout_weight="1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    style="@style/datosCuadros"
+                                    android:gravity="left"
+                                    android:text="5526 BCC"/>
+                                <ImageButton
+                                    android:background="@color/white"
+                                    android:layout_weight="5"
+                                    android:id="@+id/btn_asignar_matricula"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_action_edit"
+                                    />
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -131,21 +145,35 @@
                         android:layout_weight="1"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-
                         android:orientation="vertical">
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             style="@style/etiquetasCuadro"
                             android:text="Remolque"/>
-                        <TextView
-                            android:id="@+id/tv_mov_stock_matricula_remolque"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="left"
-                            style="@style/datosCuadros"
-                            android:text="R-456454"
-                            />
+                            android:layout_height="wrap_content"
+                            >
+                            <EditText
+                                android:id="@+id/tv_mov_stock_matricula_remolque"
+                                android:layout_weight="1"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="left"
+                                style="@style/datosCuadros"
+                                android:text="R-456454"
+                                />
+                            <ImageButton
+                                android:background="@color/white"
+                                android:layout_weight="5"
+                                android:id="@+id/btn_asignar_matricula_remolque"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_action_edit"
+                                />
+                            
+                            </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -179,7 +207,7 @@
                                     android:layout_height="wrap_content">
                                     <TextView
                                         android:layout_weight="1"
-                                        android:id="@+id/tv_mov_stock_matricula"
+                                        android:id="@+id/tv_mov_stock_chofer"
                                         android:layout_width="fill_parent"
                                         android:layout_height="wrap_content"
                                         style="@style/datosCuadros"

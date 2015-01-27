@@ -22,9 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static es.incaser.apps.tools.Tools.date2Sql;
-import static es.incaser.apps.tools.Tools.str2date;
-
+import static es.incaser.apps.stockcontrol.Tools.*;
 
 /**
  * Created by sergio on 23/09/14.
