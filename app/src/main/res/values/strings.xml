@@ -28,5 +28,7 @@
     <string name="msg_tipo_incorrecto">El número de serie no corresponde con el artículo seleccionado</string>
     <string name="msg_articulo_escaneado">Este artículo ya está escaneado</string>
     <string name="title_activity_search">Buscador</string>
+    <string name="title_activity_asignar_transporte">Asignar Transporte</string>
+    <string name="action_aceptar">Aceptar</string>
 
 </resources>

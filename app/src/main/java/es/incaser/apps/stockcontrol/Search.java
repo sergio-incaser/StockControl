@@ -27,6 +27,7 @@ public class Search extends ActionBarActivity implements TextWatcher{
     String tabla;
     String campoBusqueda;
     String campoRetorno;
+    String tagRetorno;
     Bundle bundleOrig;
 
     @Override
@@ -147,7 +148,9 @@ public class Search extends ActionBarActivity implements TextWatcher{
         Cursor cur = (Cursor) searchAdapter.getItem(position);
         returnIntent.putExtra("id",cur.getString(0));
         returnIntent.putExtra("campoRetorno", campoRetorno);
-        returnIntent.putExtra("valorRetorno", cur.getString(cur.getColumnIndex(campoRetorno)));
+        returnIntent.putExtra("valorRetorno", cur.getString(cur.getColumnIndex(campoBusqueda)));
+        returnIntent.putExtra("tagRetorno", cur.getString(cur.getColumnIndex(campoRetorno)));
+
         returnIntent.putExtra("tipoMov",bundleOrig.getString("tipoMov"));
         returnIntent.putExtra("serieMov",bundleOrig.getString("serieMov"));
         returnIntent.putExtra("documentoMov",bundleOrig.getString("documentoMov"));

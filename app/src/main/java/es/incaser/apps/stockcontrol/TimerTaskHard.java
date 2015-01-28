@@ -36,8 +36,8 @@ public class TimerTaskHard extends TimerTask{
             if (SQLConnection.connection == null) {
                 msg.obj = "errorSQLconnection";
             }
-            syncData.exportMovArticuloSerie(TipoMovimiento.ENTRADA, lastSyncDate);
-            syncData.exportMovArticuloSerie(TipoMovimiento.SALIDA, lastSyncDate);
+            syncData.exportMovArticuloSerie(TipoMovimiento.ENTRADA, syncDate);
+            syncData.exportMovArticuloSerie(TipoMovimiento.SALIDA, syncDate);
             syncData.emptyLocalTables();
             syncData.importRecords();
             SharedPreferences.Editor editor = pref.edit();

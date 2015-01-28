@@ -44,6 +44,11 @@ public class TimerTaskSoft extends TimerTask{
             } else {
                 msg.obj = "ERROR EN LA SINCRONIZACION";
             }
+            if (syncData.exportMovStock(TipoMovimiento.SALIDA, syncDate) >= 0) {
+                msg.obj = "Export MovStock expediciones";
+            } else {
+                msg.obj = "ERROR EN LA SINCRONIZACION";
+            }
 
             String lastSyncDate = pref.getString("pref_last_sync", "2000-01-01 00:00:00.0");
             if (syncData.importMovArticuloSerie(lastSyncDate)){

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,23 +32,20 @@ public class Expediciones extends ActionBarActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expediciones);
-        linkListViewMovimientoStock();
-        
+
     }
 
     public void linkListViewMovimientoStock(){
         lvMovimientoStock = (ListView) findViewById(R.id.lv_expediciones);
         movStockAdapter = new MovStockAdapter(this);
         lvMovimientoStock.setAdapter(movStockAdapter);
-        lvMovimientoStock.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String a="2";
-            }
-        });
     }
-    
-    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        linkListViewMovimientoStock();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -119,19 +117,13 @@ public class Expediciones extends ActionBarActivity{
             TextView txtSerie = (TextView) myView.findViewById(R.id.tv_mov_stock_serie);
             TextView txtDocumento = (TextView) myView.findViewById(R.id.tv_mov_stock_documento);
             TextView txtTotalArticulos = (TextView) myView.findViewById(R.id.tv_mov_stock_unidades_total);
-            EditText txtMatricula = (EditText) myView.findViewById(R.id.tv_mov_stock_matricula);
-            EditText txtMatriculaRemolque = (EditText) myView.findViewById(R.id.tv_mov_stock_matricula_remolque);
+            TextView txtMatricula = (TextView) myView.findViewById(R.id.tv_mov_stock_matricula);
+            TextView txtMatriculaRemolque = (TextView) myView.findViewById(R.id.tv_mov_stock_matricula_remolque);
             TextView txtChofer = (TextView) myView.findViewById(R.id.tv_mov_stock_chofer);
             
-            ImageButton btn_chofer = (ImageButton) myView.findViewById(R.id.btn_asignar_chofer);
+            ImageButton btn_chofer = (ImageButton) myView.findViewById(R.id.btn_asignar_transporte);
             btn_chofer.setTag(position);
             btn_chofer.setOnClickListener(this);
-            ImageButton btn_matricula = (ImageButton) myView.findViewById(R.id.btn_asignar_matricula);
-            btn_matricula.setTag(position);
-            btn_matricula.setOnClickListener(this);
-            ImageButton btn_remolque = (ImageButton) myView.findViewById(R.id.btn_asignar_matricula_remolque);
-            btn_remolque.setTag(position);
-            btn_remolque.setOnClickListener(this);
 
             //txtFecha.setText(dateStr2str(getMovimiento("Fecha")));
             txtSerie.setText(getMovimiento("Serie"));
@@ -151,30 +143,19 @@ public class Expediciones extends ActionBarActivity{
 
         @Override
         public void onClick(View v) {
-            Intent intentSearch = new Intent(v.getContext(),Search.class);
+            Intent intentSearch = new Intent(v.getContext(),AsignarTransporte.class);
             cursor.moveToPosition((int) v.getTag());
 
             intentSearch.putExtra("tipoMov", TipoMovimiento.SALIDA);
             intentSearch.putExtra("serieMov", cursor.getString(cursor.getColumnIndex("Serie")));
             intentSearch.putExtra("documentoMov", cursor.getString(cursor.getColumnIndex("Documento")));
+            intentSearch.putExtra("Matricula", cursor.getString(cursor.getColumnIndex("Matricula")));
+            intentSearch.putExtra("MatriculaRemolque", cursor.getString(cursor.getColumnIndex("MatriculaRemolque")));
+            intentSearch.putExtra("CodigoChofer", cursor.getString(cursor.getColumnIndex("CodigoChofer")));
+            intentSearch.putExtra("Chofer", cursor.getString(cursor.getColumnIndex("RazonSocial")));
             switch (v.getId()) {
-                case R.id.btn_asignar_chofer:
-                    intentSearch.putExtra("tabla", "Choferes");
-                    intentSearch.putExtra("campoBusqueda", "RazonSocial");
-                    intentSearch.putExtra("campoRetorno", "CodigoChofer");
-                    startActivityForResult(intentSearch, 1);
-                    break;
-                case R.id.btn_asignar_matricula:
-                    intentSearch.putExtra("tabla", "TRA_Vehiculos");
-                    intentSearch.putExtra("campoBusqueda", "Matricula");
-                    intentSearch.putExtra("campoRetorno", "Matricula");
-                    startActivityForResult(intentSearch, 2);
-                    break;
-                case R.id.btn_asignar_matricula_remolque:
-                    intentSearch.putExtra("tabla", "TRA_Remolques");
-                    intentSearch.putExtra("campoBusqueda", "MatriculaRemolque");
-                    intentSearch.putExtra("campoRetorno", "MatriculaRemolque");
-                    startActivityForResult(intentSearch, 3);
+                case R.id.btn_asignar_transporte:
+                    startActivity(intentSearch);
                     break;
                 default:
                     Intent intent = new Intent(v.getContext(), BarcodeReader.class);
@@ -185,24 +166,5 @@ public class Expediciones extends ActionBarActivity{
                     break;
             }
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK){
-            String id = data.getStringExtra("id");
-            String tipoMov = data.getStringExtra("tipoMov");
-            String serieMov = data.getStringExtra("serieMov");
-            String documentoMov = data.getStringExtra("documentoMov");
-            String campoRetorno = data.getStringExtra("campoRetorno");
-            String valorRetorno = data.getStringExtra("valorRetorno");
-            dbAdapter.updateMovimientoStock(tipoMov, serieMov, documentoMov, campoRetorno, valorRetorno);
-            movStockAdapter.cursor.requery();
-            movStockAdapter.notifyDataSetChanged();
-        }
-        if (resultCode == RESULT_CANCELED) {
-            //Write your code if there's no result
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -34,6 +34,10 @@
             android:name=".Search"
             android:label="@string/title_activity_search" >
         </activity>
+        <activity
+            android:name=".AsignarTransporte"
+            android:label="@string/title_activity_asignar_transporte" >
+        </activity>
     </application>
 
 </manifest>

@@ -126,7 +126,25 @@ public class SyncData {
         return numReg;
     }
 
-    
+    public int exportMovStock(String tipoMov, String syncDate) {
+        int numReg = 0;
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this.myContext);
+        String lastSyncDate = pref.getString("pref_last_sync", "2000-01-01 00:00:00.0");
+
+        Cursor cursor = dbAdapter.getMovimientoStockModif(TipoMovimiento.SALIDA, lastSyncDate);
+        Log.w("Exportando MovStock "+tipoMov,String.valueOf(cursor.getCount()));
+        while (cursor.moveToNext()) {
+            int x = conSQL.updateSQL("UPDATE MovimientoStock SET " +
+                    "Matricula='"+cursor.getString(cursor.getColumnIndex("Matricula"))+"'," +
+                    "MatriculaRemolque='" + cursor.getString(cursor.getColumnIndex("MatriculaRemolque"))+"'," +
+                    "CodigoChofer='"+cursor.getString(cursor.getColumnIndex("CodigoChofer"))+"',"+
+                    "FechaRegistro = " + date2Sql(syncDate) +
+                    " WHERE MovPosicion='" + cursor.getString(cursor.getColumnIndex("MovPosicion")) + "'");
+            numReg++;
+        };
+        return numReg;
+    }
+
     
     public int exportMovArticuloSerie(String tipoMov, String syncDate) {
         ArrayList <String> guidList = new ArrayList<String>();

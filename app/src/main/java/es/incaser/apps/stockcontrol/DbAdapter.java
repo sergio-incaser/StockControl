@@ -282,6 +282,11 @@ public class DbAdapter extends SQLiteOpenHelper {
         return cur;
     }
 
+    public Cursor getMovimientoStockModif(String tipoMov, String lastSyncDate) {
+        return db.query("MovimientoStock", new String[]{"*"}, "TipoMovimiento=? AND FechaRegistro>?",
+                new String[]{tipoMov, lastSyncDate}, "", "", "FechaRegistro");
+    }
+
     public Cursor getMovimientoStock(String codigoEmpresa, String tipoMov) {
         return db.query("MovimientoStock", new String[]{"*"}, "CodigoEmpresa=? AND TipoMovimiento=?",
                 new String[]{codigoEmpresa, tipoMov}, "", "", "FechaRegistro DESC");
@@ -301,8 +306,12 @@ public class DbAdapter extends SQLiteOpenHelper {
     public Cursor getExpediciones(String codigoEmpresa) {
         // MovimientosStock Distinct serie-documento
         String table = "MovimientoStock LEFT JOIN Choferes ON MovimientoStock.CodigoChofer=Choferes.CodigoChofer";
-        return db.query(table, new String[]{"*, SUM(Unidades) AS Unidades"}, "CodigoEmpresa=? AND TipoMovimiento=2",
-                new String[]{codigoEmpresa}, "CodigoEmpresa, Serie, Documento", "", "FechaRegistro");
+        String campos ="MAX(MovimientoStock.id) as id, MovimientoStock.CodigoEmpresa, Serie, Documento," +
+                "MAX(FechaRegistro) AS FechaRegistro, SUM(Unidades) AS Unidades," +
+                "MAX(Matricula) as Matricula, MAX(MatriculaRemolque) as MatriculaRemolque," +
+                "MAX(MovimientoStock.CodigoChofer) as CodigoChofer, MAX(Choferes.RazonSocial) as RazonSocial";
+        return db.query(table, new String[]{campos}, "MovimientoStock.CodigoEmpresa=? AND TipoMovimiento=2",
+                new String[]{codigoEmpresa}, "MovimientoStock.CodigoEmpresa, Serie, Documento", "", "Serie, Documento");
     }
 
     public int getNumSerieLeidosCount(String movPosicion) {
@@ -365,10 +374,8 @@ public class DbAdapter extends SQLiteOpenHelper {
         return db.update("MovimientoStock", cv, "MovPosicion = ?", new String[]{movPosicion});
     }
 
-    public int updateMovimientoStock(String tipoMov, String serie, String documento, String campo, String valor) {
-        ContentValues cv = new ContentValues();
+    public int updateMovimientoStock(String tipoMov, String serie, String documento, ContentValues cv) {
         cv.put("FechaRegistro", Tools.getToday("yyyy-MM-dd HH:mm:ss.S"));
-        cv.put(campo, valor);
         return db.update("MovimientoStock", cv, "TipoMovimiento=? AND Serie=? AND Documento=?", new String[]{tipoMov, serie, documento});
     }
     
