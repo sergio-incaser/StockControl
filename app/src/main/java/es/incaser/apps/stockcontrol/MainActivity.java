@@ -84,6 +84,34 @@ public class MainActivity extends ActionBarActivity {
                 break;
         }
     }
+    public void onClickLayout(View view){
+        DbAdapter dbAdapter = new DbAdapter(getApplicationContext());
+        Intent intent;
+        switch (view.getId()){
+            case R.id.lay_hard_sincro:
+                //forzamos el proceso de sincronizacion de los movimientos
+                launchHardSync();
+                break;
+            case R.id.lay_entradas_previstas:
+                intent = new Intent(this, BarcodeReader.class);
+                intent.putExtra("tipoMov",TipoMovimiento.ENTRADA);
+                startActivity(intent);
+                break;
+            case R.id.lay_expediciones:
+                intent = new Intent(this, Expediciones.class);
+                startActivity(intent);
+                break;
+//            case R.id.btn_entradas_libres:
+//                dbAdapter.recreateDb();
+//                break;
+//            case R.id.btn_soft_sync:
+//                launcSoftSync();
+//                break;
+//            case R.id.btn_hard_sync:
+//                launchHardSync();
+//                break;
+        }
+    }
 
     private Handler handler = new Handler(){
         @Override

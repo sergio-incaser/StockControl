@@ -9,6 +9,65 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/lay_hard_sincro"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@style/layoutButton">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/sincro_hard"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent" 
+                android:text="Sincronizar"
+                style="@style/layoutButtonText"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lay_entradas_previstas"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@style/layoutButton">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/entradas_previstas"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:text="Entradas Previstas"
+                style="@style/layoutButtonText"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lay_expediciones"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            style="@style/layoutButton">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/expedicion"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:text="Expediciones"
+                style="@style/layoutButtonText"
+                />
+        </LinearLayout>
+
+        
         <Button
             android:id="@+id/btn_sync"
             style="@style/BtnInit"
