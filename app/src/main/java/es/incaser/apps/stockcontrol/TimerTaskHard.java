@@ -23,7 +23,7 @@ public class TimerTaskHard extends TimerTask{
     
     @Override
     public void run() {
-        msg = Message.obtain(handler, 0, "Run Hard");
+        msg = Message.obtain(handler, 1, "Run Hard");
         String syncDate;
         try {
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);

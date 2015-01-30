@@ -28,7 +28,7 @@
                     style="@style/EtiquetaSeparador"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Articulo" />
+                    android:text="Artículo" />
 
                 <TextView
                     android:id="@+id/tv_articulo"
@@ -49,7 +49,7 @@
                     style="@style/EtiquetaSeparador"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Matricula" />
+                    android:text="Matrícula" />
 
                 <TextView
                     android:id="@+id/tv_matricula"

@@ -5,22 +5,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import static es.incaser.apps.stockcontrol.Tools.dateStr2str;
 
 
 public class Expediciones extends ActionBarActivity{
@@ -104,7 +97,7 @@ public class Expediciones extends ActionBarActivity{
 
             if (convertView == null) {
                 LayoutInflater myInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                myView = myInflater.inflate(R.layout.item_expedicionxxy, null);
+                myView = myInflater.inflate(R.layout.item_expedicion, null);
             } else {
                 myView = convertView;
             }

@@ -148,9 +148,10 @@ public class SyncData {
     
     public int exportMovArticuloSerie(String tipoMov, String syncDate) {
         ArrayList <String> guidList = new ArrayList<String>();
-        int numReg = dbAdapter.updateStatusSync("MovimientoArticuloSerie", tipoMov, StatusSync.ESCANEADO, StatusSync.EXPORTANDO);
+        dbAdapter.updateStatusSync("MovimientoArticuloSerie", tipoMov, StatusSync.ESCANEADO, StatusSync.EXPORTANDO);
+        Cursor cursor = dbAdapter.getMovArticuloSerie(StatusSync.EXPORTANDO);
+        int numReg = cursor.getCount();
         if (numReg > 0){
-            Cursor cursor = dbAdapter.getMovArticuloSerie(StatusSync.EXPORTANDO);
             Log.w("Exportando "+tipoMov,String.valueOf(cursor.getCount()));
             while (cursor.moveToNext()) {
                 guidList.add("'" + cursor.getString(cursor.getColumnIndex("MovPosicion")) + "'");
@@ -297,6 +298,7 @@ public class SyncData {
                     target.updateString(col, val);
                 }
                 target.insertRow();
+                String a="sss";
             }
             Log.w(tableSource, "Exportados: " + source.getCount());
         } catch (java.sql.SQLException e) {

@@ -25,21 +25,37 @@
                 android:padding="15dp"
                 android:text="44671420222703"
                 android:inputType="number" />
-            <ImageButton
-                android:layout_weight="17"
-                android:id="@+id/btn_read"
+
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/codigobarras"
-                android:maxWidth="120dp"
-                />
-            <ImageButton
-                android:layout_weight="17"
-                android:id="@+id/btn_camara"
+                android:layout_height="fill_parent"
+                android:layout_weight="17">
+
+                <ImageButton
+                    android:id="@+id/btn_camara"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/escanear"
+                    />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/camara"
-                />
+                android:layout_height="fill_parent"
+                android:layout_weight="20">
+
+                <ImageButton
+                    android:id="@+id/btn_read"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/ic_action_accept"
+                    android:background="@drawable/button"
+                    android:layout_gravity="center_vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true" />
+            </RelativeLayout>
 
         </LinearLayout>
         <TextView

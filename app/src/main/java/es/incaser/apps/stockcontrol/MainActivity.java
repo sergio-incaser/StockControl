@@ -89,8 +89,9 @@ public class MainActivity extends ActionBarActivity {
                 case 0:
                     Toast.makeText(getApplicationContext(),msg.obj.toString(), Toast.LENGTH_SHORT).show();
                     break;
-                case 15:
-                    Toast.makeText(getApplicationContext(),"Hola Pepito", Toast.LENGTH_SHORT).show();
+                case 1:
+                    Toast.makeText(getApplicationContext(),msg.obj.toString(), Toast.LENGTH_SHORT).show();
+                    timerHard.cancel();
                     break;
 
                 default:
@@ -103,6 +104,7 @@ public class MainActivity extends ActionBarActivity {
         if (pref_hard_sync > 0){
             TimerTaskHard timerTaskHard = new TimerTaskHard(handler, getApplicationContext());
             timerHard.schedule(timerTaskHard, 1500, pref_hard_sync * 1000);
+
         }
     }
 
@@ -130,6 +132,8 @@ public class MainActivity extends ActionBarActivity {
         //TODO. Leer codigoEmpresa de preferebnces
     }
 
+    
+    
     @Override
     protected void onDestroy() {
         timerHard.cancel();

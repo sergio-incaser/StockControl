@@ -17,7 +17,7 @@
                 android:id="@+id/txt_buscador"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Buscar..."
+                android:hint="Buscar..."
                 />                
             </LinearLayout>
         <LinearLayout

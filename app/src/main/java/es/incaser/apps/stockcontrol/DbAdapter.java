@@ -232,8 +232,7 @@ public class DbAdapter extends SQLiteOpenHelper {
         cv.put("StatusAndroidSync", newStatus);
         SQLConnection conSQL = new SQLConnection();
         cv.put("FechaRegistro", conSQL.getDate());
-        return db.update(table, cv,"OrigenDocumento=? AND StatusAndroidSync=?",
-                new String[]{TipoMovimiento.origenMov(tipoMov), oldStatus});
+        return db.update(table, cv,"OrigenDocumento=? AND StatusAndroidSync=?",new String[]{TipoMovimiento.origenMov(tipoMov), oldStatus});
     }
 
     public int updateStatusSyncGuid(String table, String guid, String newStatus){

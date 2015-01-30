@@ -77,8 +77,10 @@ public class BarcodeReader extends ActionBarActivity {
         btnReader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (txtBarcode.getText().toString().length() > 0){
+                if (txtBarcode.getText().toString().length() > 10){
                     leerCodigo(txtBarcode.getText().toString());
+                }else {
+                    Toast.makeText(v.getContext(), "Código demasiado corto", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -193,20 +195,25 @@ public class BarcodeReader extends ActionBarActivity {
     }
     
     private void leerCodigo(String barCode){
-        String code = barCode.substring(3,10);
-        if (tipoMov.equals(TipoMovimiento.ENTRADA)) {
-            Cursor cur = dbAdapter.getMovArticuloSerieNumSerie(TipoMovimiento.origenMov(tipoMov), code);
-            if (cur.moveToFirst()) {
-                dbAdapter.updateMovimientoArticuloSerie(cur.getString(cur.getColumnIndex("MovPosicion")));
-                dbAdapter.updateMovimientoStock(cur.getString(cur.getColumnIndex("MovPosicionOrigen")));
-            } else {
-                //TODO. La bobina no esta en la base de datos.
+        try {
+            String code = barCode.substring(3,10);
+            if (tipoMov.equals(TipoMovimiento.ENTRADA)) {
+                Cursor cur = dbAdapter.getMovArticuloSerieNumSerie(TipoMovimiento.origenMov(tipoMov), code);
+                if (cur.moveToFirst()) {
+                    dbAdapter.updateMovimientoArticuloSerie(cur.getString(cur.getColumnIndex("MovPosicion")));
+                    dbAdapter.updateMovimientoStock(cur.getString(cur.getColumnIndex("MovPosicionOrigen")));
+                } else {
+                    //TODO. La bobina no esta en la base de datos.
+                    Toast.makeText(this,"Código no disponible",Toast.LENGTH_SHORT).show();
+                }
+            }else {
+                expedirBarcode(code);
             }
-        }else {
-            expedirBarcode(code);
-        }
-        movStockAdapter.cursor.requery();
-        movStockAdapter.notifyDataSetChanged();
+            movStockAdapter.cursor.requery();
+            movStockAdapter.notifyDataSetChanged();
+        }catch (Exception e){
+            Toast.makeText(this, e.toString(),Toast.LENGTH_SHORT).show();
+        };
     }
     
     private void expedirBarcode(String code){
@@ -229,6 +236,8 @@ public class BarcodeReader extends ActionBarActivity {
                 //TODO. bobina incorrecta
                 Toast.makeText(getApplicationContext(),R.string.msg_tipo_incorrecto, Toast.LENGTH_SHORT).show();
             }
+        }else {
+            Toast.makeText(getApplicationContext(),"El artículo no existe", Toast.LENGTH_SHORT).show();
         }
     }
     
