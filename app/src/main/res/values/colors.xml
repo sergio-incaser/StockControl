@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="red">#FF1A19</color>
-    <color name="green">#ff26ffa5</color>
+    <color name="green">#ff3aff8d</color>
     <color name="white">#fff</color>
     <color name="grey">#ffd9d8d7</color>
+    <color name="button">#ffff8843</color>
 </resources>
