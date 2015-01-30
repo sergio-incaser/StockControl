@@ -140,5 +140,6 @@
         <item name="android:clickable">true</item>
         <item name="android:background">@drawable/lay_button</item>
         <item name="android:onClick">onClickLayout</item>
+        <item name="android:layout_centerVertical">true</item>
     </style>
 </resources>

@@ -8,4 +8,5 @@
     <dimen name="lay_button_border_right">3dp</dimen>
     <dimen name="lay_button_border_top">3dp</dimen>
     <dimen name="lay_button_border_bottom">3dp</dimen>
+    <dimen name="button_round">150dp</dimen>
 </resources>

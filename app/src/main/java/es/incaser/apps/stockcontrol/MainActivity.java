@@ -45,47 +45,24 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent myIntent = new Intent(this, SettingsActivity.class);
-            startActivity(myIntent);
+        switch (id){
+            case R.id.action_settings:
+                Intent myIntent = new Intent(this, SettingsActivity.class);
+                startActivity(myIntent);
+                break;
+            case R.id.action_db_rebuild:
+                DbAdapter dbAdapter = new DbAdapter(getApplicationContext());
+                dbAdapter.recreateDb();
+                break;
+            case R.id.action_soft_sync:
+                launcSoftSync();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void onClickButtons(View view){
-        DbAdapter dbAdapter = new DbAdapter(getApplicationContext());
-        Intent intent;
-        switch (view.getId()){
-            case R.id.btn_sync:
-                //forzamos el proceso de sincronizacion de los movimientos
-                launchHardSync();
-                break;
-            case R.id.btn_entradas_previstas:
-//                if (! dbAdapter.checkTables()){
-//                    dbAdapter.recreateDb();
-//                };
-                intent = new Intent(this, BarcodeReader.class);
-                intent.putExtra("tipoMov",TipoMovimiento.ENTRADA);
-                startActivity(intent);
-                break;
-            case R.id.btn_entradas_libres:
-                dbAdapter.recreateDb();
-                break;
-            case R.id.btn_expediciones:
-                intent = new Intent(this, Expediciones.class);
-                startActivity(intent);
-                break;
-            case R.id.btn_soft_sync:
-                launcSoftSync();
-                break;
-            case R.id.btn_hard_sync:
-                launchHardSync();
-                break;
-        }
-    }
     public void onClickLayout(View view){
-        DbAdapter dbAdapter = new DbAdapter(getApplicationContext());
         Intent intent;
         switch (view.getId()){
             case R.id.lay_hard_sincro:
@@ -101,15 +78,6 @@ public class MainActivity extends ActionBarActivity {
                 intent = new Intent(this, Expediciones.class);
                 startActivity(intent);
                 break;
-//            case R.id.btn_entradas_libres:
-//                dbAdapter.recreateDb();
-//                break;
-//            case R.id.btn_soft_sync:
-//                launcSoftSync();
-//                break;
-//            case R.id.btn_hard_sync:
-//                launchHardSync();
-//                break;
         }
     }
 

@@ -173,8 +173,8 @@ public class BarcodeReader extends ActionBarActivity {
             TextView txtTotalLecturas = (TextView) myView.findViewById(R.id.tv_totalLecturas);
 
             txtArticulo.setText(getMovimiento("CodigoArticulo"));
-            txtMatricula.setText("(" + getMovimiento("FechaRegistro") + ")");
-//            txtMatricula.setText("(" + getMovimiento("MatriculaTransporte_") + ")");
+//            txtMatricula.setText("(" + getMovimiento("FechaRegistro") + ")");
+            txtMatricula.setText("(" + getMovimiento("MatriculaTransporte_") + ")");
             txtCodigoCarga.setText(getMovimiento("Documento"));
             int leidos = dbAdapter.getNumSerieLeidosCount(getMovimiento("MovPosicion"));
             txtTotalLecturas.setText(Integer.toString(leidos) +" de " + getMovimiento("Unidades"));

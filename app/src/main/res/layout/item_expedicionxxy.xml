@@ -186,13 +186,14 @@
                                         android:gravity="left"
                                         android:text="Jose Antonio del Rio"/>
                                     <ImageButton
-                                        android:background="@color/white"
-                                        android:layout_weight="5"
+                                        android:background="@drawable/button"
+                                        android:clickable="true"
                                         android:id="@+id/btn_asignar_transporte"
-                                        android:layout_width="fill_parent"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:src="@drawable/ic_action_edit"
-                                        />
+                                        android:cropToPadding="false"
+                                        android:padding="5dp" />
                                     </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>

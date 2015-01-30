@@ -10,120 +10,84 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/lay_hard_sincro"
-            android:orientation="horizontal"
+        <RelativeLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            style="@style/layoutButton">
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/lay_hard_sincro"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/sincro_hard"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent" 
-                android:text="Sincronizar"
-                style="@style/layoutButtonText"
-                />
-        </LinearLayout>
+                style="@style/layoutButton">
 
-        <LinearLayout
-            android:id="@+id/lay_entradas_previstas"
-            android:orientation="horizontal"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/sincro_hard"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:text="Sincronizar"
+                    style="@style/layoutButtonText"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            style="@style/layoutButton">
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/lay_entradas_previstas"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/entradas_previstas"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:text="Entradas Previstas"
-                style="@style/layoutButtonText"
-                />
-        </LinearLayout>
+                style="@style/layoutButton">
 
-        <LinearLayout
-            android:id="@+id/lay_expediciones"
-            android:orientation="horizontal"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/entradas_previstas"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:text="Entradas Previstas"
+                    style="@style/layoutButtonText"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            style="@style/layoutButton">
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/lay_expediciones"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/expedicion"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:text="Expediciones"
-                style="@style/layoutButtonText"
-                />
-        </LinearLayout>
+                style="@style/layoutButton">
 
-        
-        <Button
-            android:id="@+id/btn_sync"
-            style="@style/BtnInit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_sync"
-            android:onClick="onClickButtons"/>
-        <Button
-            android:id="@+id/btn_entradas_previstas"
-            style="@style/BtnInit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_entradas_previstas"
-            android:onClick="onClickButtons"/>
-        <Button
-            android:id="@+id/btn_entradas_libres"
-            style="@style/BtnInit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_entradas_libres"
-            android:onClick="onClickButtons"/>
-        <Button
-            android:id="@+id/btn_expediciones"
-            style="@style/BtnInit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_expediciones"
-            android:onClick="onClickButtons"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:orientation="horizontal"
-            >
-        <Button
-            android:id="@+id/btn_soft_sync"
-            style="@style/BtnInit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Soft Sync"
-            android:onClick="onClickButtons"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:orientation="horizontal"
-            >
-            <Button
-                android:id="@+id/btn_hard_sync"
-                style="@style/BtnInit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Hard Sync"
-                android:onClick="onClickButtons"/>
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/expedicion"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:text="Expediciones"
+                    style="@style/layoutButtonText"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+
 
     </LinearLayout>
 

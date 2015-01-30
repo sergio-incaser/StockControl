@@ -16,25 +16,27 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:background="#fff"
-            android:weightSum="1">
+            android:background="#fff">
             <EditText
+                android:layout_weight="10"
                 android:id="@+id/txt_barcodeReader"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
                 android:padding="15dp"
                 android:text="44671420222703"
                 android:inputType="number" />
             <ImageButton
+                android:layout_weight="17"
                 android:id="@+id/btn_read"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
                 android:src="@drawable/codigobarras"
                 android:maxWidth="120dp"
                 />
             <ImageButton
+                android:layout_weight="17"
                 android:id="@+id/btn_camara"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:src="@drawable/camara"
                 />
