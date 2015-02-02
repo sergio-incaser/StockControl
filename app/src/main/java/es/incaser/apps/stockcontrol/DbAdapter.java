@@ -248,8 +248,9 @@ public class DbAdapter extends SQLiteOpenHelper {
         cv.put("StatusAndroidSync", newStatus);
         SQLConnection conSQL = new SQLConnection();
         cv.put("FechaRegistro", conSQL.getDate());
-        String strList = TextUtils.join(",", guidList).replace("'", "");
-        return db.update(table, cv, "MovPosicion in (?)", new String[]{strList});
+        String strList = TextUtils.join(",", guidList);
+        //No funciona por parametros
+        return db.update(table, cv, "MovPosicion in ("+strList+")", new String[]{});
     }
 
     
@@ -275,9 +276,9 @@ public class DbAdapter extends SQLiteOpenHelper {
     }
 
     public Cursor getMovArticuloSerieGuid(String movPosicion) {
-        String a= "'" + movPosicion + "'";
+        //String a= "'" + movPosicion + "'";
         Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"*"}, "MovPosicion=?",
-                new String[]{a}, "", "", "");
+                new String[]{movPosicion}, "", "", "");
         return cur;
     }
 
@@ -333,7 +334,7 @@ public class DbAdapter extends SQLiteOpenHelper {
         cv.put("EjercicioDocumento", curMovStock.getString(curMovStock.getColumnIndex("Ejercicio")));
         cv.put("SerieDocumento", curMovStock.getString(curMovStock.getColumnIndex("Serie")));
         cv.put("Documento", curMovStock.getString(curMovStock.getColumnIndex("Documento")));
-        cv.put("MovPosicion", UUID.randomUUID().toString());
+        cv.put("MovPosicion", UUID.randomUUID().toString().toUpperCase());
         cv.put("MovPosicionOrigen", curMovStock.getString(curMovStock.getColumnIndex("MovPosicion")));
         cv.put("CodigoTalla01_", curMovStock.getString(curMovStock.getColumnIndex("CodigoTalla01_")));
         cv.put("CodigoAlmacen", curMovStock.getString(curMovStock.getColumnIndex("CodigoAlmacen")));

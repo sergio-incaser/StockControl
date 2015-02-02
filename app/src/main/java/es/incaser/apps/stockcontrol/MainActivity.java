@@ -91,7 +91,7 @@ public class MainActivity extends ActionBarActivity {
                     break;
                 case 1:
                     Toast.makeText(getApplicationContext(),msg.obj.toString(), Toast.LENGTH_SHORT).show();
-                    timerHard.cancel();
+                    //timerHard.cancel();
                     break;
 
                 default:

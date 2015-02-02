@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -169,22 +168,33 @@ public class BarcodeReader extends ActionBarActivity {
             }
             cursor.moveToPosition(position);
 
-            TextView txtArticulo = (TextView) myView.findViewById(R.id.tv_articulo);
-            TextView txtMatricula = (TextView) myView.findViewById(R.id.tv_matricula);
-            TextView txtCodigoCarga = (TextView) myView.findViewById(R.id.tv_codigoCarga);
-            TextView txtTotalLecturas = (TextView) myView.findViewById(R.id.tv_totalLecturas);
+            TextView txtArticulo = (TextView) myView.findViewById(R.id.tv_mov_stock_articulo);
+            txtArticulo.setText(getMovimiento("CodigoSubfamilia"));
+            TextView txtGramaje = (TextView) myView.findViewById(R.id.tv_mov_stock_gramaje);
+            txtGramaje.setText(getMovimiento("PesoNetoUnitario_"));
+            TextView txtAncho = (TextView) myView.findViewById(R.id.tv_mov_stock_ancho);
+            txtAncho.setText(getMovimiento("VolumenUnitario_"));
+            TextView txtTalla = (TextView) myView.findViewById(R.id.tv_mov_stock_diametro);
+            txtTalla.setText(getMovimiento("CodigoTalla01_"));
 
-            txtArticulo.setText(getMovimiento("CodigoArticulo"));
-//            txtMatricula.setText("(" + getMovimiento("FechaRegistro") + ")");
-            txtMatricula.setText("(" + getMovimiento("MatriculaTransporte_") + ")");
+            TextView txtCodigoCarga = (TextView) myView.findViewById(R.id.tv_mov_stock_documento);
             txtCodigoCarga.setText(getMovimiento("Documento"));
+
+            TextView txtTotalLecturas = (TextView) myView.findViewById(R.id.tv_mov_stock_unidades_total);
             int leidos = dbAdapter.getNumSerieLeidosCount(getMovimiento("MovPosicion"));
             txtTotalLecturas.setText(Integer.toString(leidos) +" de " + getMovimiento("Unidades"));
             if (leidos >= Integer.valueOf(getMovimiento("Unidades"))){
-                myView.findViewById(R.id.lay_item_movStock).setBackgroundColor(getResources().getColor(R.color.green));
+                myView.findViewById(R.id.lay_item_mov_stock).setBackgroundColor(getResources().getColor(R.color.green));
             }else {
-                myView.findViewById(R.id.lay_item_movStock).setBackgroundColor(getResources().getColor(R.color.white));
+                myView.findViewById(R.id.lay_item_mov_stock).setBackgroundColor(getResources().getColor(R.color.white));
             }
+            if (tipoMov.equals(TipoMovimiento.ENTRADA)){
+                myView.findViewById(R.id.mov_stock_lay_matricula).setVisibility(View.VISIBLE);
+                TextView txtMatricula = (TextView) myView.findViewById(R.id.tv_mov_stock_matricula);
+                txtMatricula.setText(getMovimiento("MatriculaTransporte_"));
+            }else {
+                myView.findViewById(R.id.mov_stock_lay_matricula).setVisibility(View.GONE);
+            };
 
             return myView;
         }

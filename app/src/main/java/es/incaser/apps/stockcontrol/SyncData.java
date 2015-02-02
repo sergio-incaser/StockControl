@@ -168,6 +168,7 @@ public class SyncData {
                 if (copyRecords(movArtSerie, "MovimientoArticuloSerie", conSQL.getResultset("SELECT * FROM MovimientoArticuloSerie WHERE 1=2",true)) > 0){
                     int x = dbAdapter.updateStatusSync("MovimientoArticuloSerie", StatusSync.PARA_CREAR, StatusSync.EXPORTADO);
                     Log.w("Update PARA_CREAR -> EXPORTADO ", String.valueOf(x));
+                    rebajeArticulosSeries();
                     x = conSQL.updateSQL("UPDATE MovimientoArticuloSerie SET StatusAndroidSync="+StatusSync.EXPORTADO+", " +
                             "FechaRegistro = " + date2Sql(syncDate) + " WHERE StatusAndroidSync='" + StatusSync.PARA_CREAR + "'");
                 };
@@ -176,6 +177,18 @@ public class SyncData {
         return numReg;
     }
 
+    private void rebajeArticulosSeries(){
+        String sql = "UPDATE ArticulosSeries" +
+                "        SET UnidadesSerie = UnidadesSerie - 1" +
+                "        WHERE CONVERT(CHAR,CodigoEmpresa)+CodigoArticulo+NumeroSerieLc =" +
+                "           (SELECT CONVERT(CHAR,CodigoEmpresa)+CodigoArticulo+NumeroSerieLc FROM MovimientoArticuloSerie" +
+                "               WHERE (ArticulosSeries.CodigoEmpresa = MovimientoArticuloSerie.CodigoEmpresa) AND" +
+                "                (ArticulosSeries.CodigoArticulo = MovimientoArticuloSerie.CodigoArticulo) AND" +
+                "                (ArticulosSeries.NumeroSerieLc = MovimientoArticuloSerie.NumeroSerieLc)AND" +
+                "                (MovimientoArticuloSerie.StatusAndroidSync = " + StatusSync.PARA_CREAR + "))";
+        int x = conSQL.updateSQL(sql);
+    }
+    
     void updateStatusMoves(String syncDate, ArrayList <String> guidList, int numReg, String statusNotExist){
         String guidListStr = TextUtils.join(",",guidList);
         int x = 0;

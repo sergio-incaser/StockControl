@@ -6,7 +6,7 @@
     android:background="#ddd">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/lay_item_movStock"
+        android:id="@+id/lay_item_mov_stock"
         android:padding="2dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,87 +18,178 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:orientation="horizontal">
 
-                <TextView
-                    style="@style/EtiquetaSeparador"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="Artículo" />
 
-                <TextView
-                    android:id="@+id/tv_articulo"
-                    android:layout_width="match_parent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/etiquetasCuadro"
+                        android:text="Artículo"/>
+                    <TextView
+                        android:id="@+id/tv_mov_stock_articulo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        style="@style/datosCuadros"
+                        android:text="SK"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:textAlignment="gravity"
-                    android:text="XX SAICA"
-                    />
+
+                    >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            style="@style/etiquetasCuadro"
+                            android:text="Gramaje"/>
+                        <TextView
+                            android:id="@+id/tv_mov_stock_gramaje"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            style="@style/datosCuadros"
+                            android:gravity="left"
+                            android:text="135"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/etiquetasCuadro"
+                        android:text="Ancho"/>
+                    <TextView
+                        android:id="@+id/tv_mov_stock_ancho"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        style="@style/datosCuadros"
+                        android:text="2330"
+                        />
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        style="@style/etiquetasCuadro"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Diametro" />
+
+                    <TextView
+                        style="@style/datosCuadros"
+                        android:id="@+id/tv_mov_stock_diametro"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        android:text="140" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
                 android:orientation="horizontal">
 
-                <TextView
-                    style="@style/EtiquetaSeparador"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_weight="10"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="Matrícula" />
 
-                <TextView
-                    android:id="@+id/tv_matricula"
-                    android:layout_width="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/etiquetasCuadro"
+                        android:text="Cód. Carga"/>
+
+                    <TextView
+                        android:id="@+id/tv_mov_stock_documento"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/datosCuadros"
+                        android:gravity="left"
+                        android:text="554548"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="10"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:textAlignment="gravity"
-                    android:text="ICR498498" />
+                    android:orientation="vertical"
+                    android:id="@+id/mov_stock_lay_matricula"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/etiquetasCuadro"
+                        android:text="Matrícula"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_mov_stock_matricula"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        style="@style/datosCuadros"
+                        android:text="IRC55422"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="10"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        style="@style/etiquetasCuadro"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Unidades" />
+
+                    <TextView
+                        style="@style/datosCuadros"
+                        android:id="@+id/tv_mov_stock_unidades_total"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        android:text="22 de 30" />
+                </LinearLayout>
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/EtiquetaSeparador"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cod. Carga" />
-
-                <TextView
-                    android:id="@+id/tv_codigoCarga"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:textAlignment="gravity"
-                    android:text="58585858" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/EtiquetaSeparador"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Recibidos" />
-
-                <TextView
-                    android:id="@+id/tv_totalLecturas"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:textAlignment="gravity"
-                    android:text="1 de 15" />
-            </LinearLayout>
-
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
