@@ -328,8 +328,7 @@ public class DbAdapter extends SQLiteOpenHelper {
         cv.put("CodigoArticulo", curMovStock.getString(curMovStock.getColumnIndex("CodigoArticulo")));
         cv.put("NumeroSerieLc", numeroSerie);
         cv.put("Fecha", Tools.getToday());
-        //TODO: REVISAR SINCRONIZACION DE RELOJ
-        //cv.put("FechaRegistro", Tools.getTimeStamp());
+        cv.put("FechaRegistro", MainActivity.contextNow());
         cv.put("OrigenDocumento", TipoMovimiento.ORIGEN_SALIDA);
         cv.put("EjercicioDocumento", curMovStock.getString(curMovStock.getColumnIndex("Ejercicio")));
         cv.put("SerieDocumento", curMovStock.getString(curMovStock.getColumnIndex("Serie")));
@@ -370,12 +369,12 @@ public class DbAdapter extends SQLiteOpenHelper {
 
     public int updateMovimientoStock(String movPosicion) {
         ContentValues cv = new ContentValues();
-        cv.put("FechaRegistro", Tools.getToday("yyyy-MM-dd HH:mm:ss.S"));
+        cv.put("FechaRegistro", MainActivity.contextNow());
         return db.update("MovimientoStock", cv, "MovPosicion = ?", new String[]{movPosicion});
     }
 
     public int updateMovimientoStock(String tipoMov, String serie, String documento, ContentValues cv) {
-        cv.put("FechaRegistro", Tools.getToday("yyyy-MM-dd HH:mm:ss.S"));
+        cv.put("FechaRegistro", MainActivity.contextNow());
         return db.update("MovimientoStock", cv, "TipoMovimiento=? AND Serie=? AND Documento=?", new String[]{tipoMov, serie, documento});
     }
     

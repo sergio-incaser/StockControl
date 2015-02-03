@@ -13,6 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 
 
@@ -22,6 +25,7 @@ public class MainActivity extends ActionBarActivity {
     static int pref_hard_sync;
     static int pref_soft_sync;
     static String codigoEmpresa = "1";
+    public static String lastSyncDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +133,7 @@ public class MainActivity extends ActionBarActivity {
         SQLConnection.database = pref.getString("pref_sql_database", "");
         pref_hard_sync = Integer.parseInt(pref.getString("pref_hard_sync", "0"));
         pref_soft_sync = Integer.parseInt(pref.getString("pref_soft_sync", "0"));
+        lastSyncDate = pref.getString("pref_last_sync", "2000-01-01 00:00:00.0");
         //TODO. Leer codigoEmpresa de preferebnces
     }
 
@@ -139,5 +144,20 @@ public class MainActivity extends ActionBarActivity {
         timerHard.cancel();
         timerSoft.cancel();
         super.onDestroy();
+    }
+
+    
+    public static String contextNow(String format) {
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        Date newdate = Tools.str2date(lastSyncDate, format);
+        newdate.setTime(newdate.getTime() + 1000);
+        if (date.after(newdate)){
+            newdate = date;
+        }
+        return sdf.format(newdate);
+    }
+    public static String contextNow() {
+        return contextNow("yyyy-MM-dd HH:mm:ss.S");
     }
 }
