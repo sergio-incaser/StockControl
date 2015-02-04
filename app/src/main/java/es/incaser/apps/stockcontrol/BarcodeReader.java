@@ -122,6 +122,7 @@ public class BarcodeReader extends ActionBarActivity {
         final EditText tvResult = (EditText)findViewById(R.id.txt_barcodeReader);
         tvResult.setText(scan_result);
         Linkify.addLinks(tvResult, Linkify.ALL);
+        leerCodigo(scan_result);
     }
 
     public class MovStockAdapter extends BaseAdapter{
