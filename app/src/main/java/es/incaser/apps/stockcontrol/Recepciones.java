@@ -16,7 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
-public class Expediciones extends ActionBarActivity{
+public class Recepciones extends ActionBarActivity {
     ListView lvMovimientoStock;
     MovStockAdapter movStockAdapter;
     DbAdapter dbAdapter;
@@ -24,14 +24,7 @@ public class Expediciones extends ActionBarActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_expediciones);
-
-    }
-
-    public void linkListViewMovimientoStock(){
-        lvMovimientoStock = (ListView) findViewById(R.id.lv_expediciones);
-        movStockAdapter = new MovStockAdapter(this);
-        lvMovimientoStock.setAdapter(movStockAdapter);
+        setContentView(R.layout.activity_recepciones);
     }
 
     @Override
@@ -40,10 +33,18 @@ public class Expediciones extends ActionBarActivity{
         linkListViewMovimientoStock();
     }
 
+
+    public void linkListViewMovimientoStock(){
+        lvMovimientoStock = (ListView) findViewById(R.id.lv_recepciones);
+        movStockAdapter = new MovStockAdapter(this);
+        lvMovimientoStock.setAdapter(movStockAdapter);
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_expediciones, menu);
+        getMenuInflater().inflate(R.menu.menu_recepciones, menu);
         return true;
     }
 
@@ -61,8 +62,6 @@ public class Expediciones extends ActionBarActivity{
 
         return super.onOptionsItemSelected(item);
     }
-
-
     public class MovStockAdapter extends BaseAdapter implements View.OnClickListener{
         Context context;
         Cursor cursor;
@@ -70,7 +69,7 @@ public class Expediciones extends ActionBarActivity{
         public MovStockAdapter(Context ctx){
             context = ctx;
             dbAdapter = new DbAdapter(context);
-            cursor = dbAdapter.getExpediciones(MainActivity.codigoEmpresa);
+            cursor = dbAdapter.getRecepciones(MainActivity.codigoEmpresa);
             cursor.moveToFirst();
         }
 
@@ -97,12 +96,12 @@ public class Expediciones extends ActionBarActivity{
 
             if (convertView == null) {
                 LayoutInflater myInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                myView = myInflater.inflate(R.layout.item_expedicion, null);
+                myView = myInflater.inflate(R.layout.item_recepcion, null);
             } else {
                 myView = convertView;
             }
             cursor.moveToPosition(position);
-            
+
             myView.setOnClickListener(this);
             myView.setTag(position);
 
@@ -111,20 +110,11 @@ public class Expediciones extends ActionBarActivity{
             TextView txtDocumento = (TextView) myView.findViewById(R.id.tv_mov_stock_documento);
             TextView txtTotalArticulos = (TextView) myView.findViewById(R.id.tv_mov_stock_unidades_total);
             TextView txtMatricula = (TextView) myView.findViewById(R.id.tv_mov_stock_matricula);
-            TextView txtMatriculaRemolque = (TextView) myView.findViewById(R.id.tv_mov_stock_matricula_remolque);
-            TextView txtChofer = (TextView) myView.findViewById(R.id.tv_mov_stock_chofer);
 
-            ImageButton btn_chofer = (ImageButton) myView.findViewById(R.id.btn_asignar_transporte);
-            btn_chofer.setTag(position);
-            btn_chofer.setOnClickListener(this);
-
-            //txtFecha.setText(dateStr2str(getMovimiento("Fecha")));
             txtSerie.setText(getMovimiento("Serie"));
             txtDocumento.setText(getMovimiento("Documento"));
             txtTotalArticulos.setText(getMovimiento("Unidades"));
-            txtMatricula.setText(getMovimiento("Matricula"));
-            txtMatriculaRemolque.setText(getMovimiento("MatriculaRemolque"));
-            txtChofer.setText(getMovimiento("RazonSocial"));
+            txtMatricula.setText(getMovimiento("MatriculaTransporte_"));
 
 
             return myView;
@@ -136,23 +126,14 @@ public class Expediciones extends ActionBarActivity{
 
         @Override
         public void onClick(View v) {
-            Intent intentSearch = new Intent(v.getContext(),AsignarTransporte.class);
             cursor.moveToPosition((int) v.getTag());
-
-            intentSearch.putExtra("tipoMov", TipoMovimiento.SALIDA);
-            intentSearch.putExtra("serieMov", cursor.getString(cursor.getColumnIndex("Serie")));
-            intentSearch.putExtra("documentoMov", cursor.getString(cursor.getColumnIndex("Documento")));
-            intentSearch.putExtra("Matricula", cursor.getString(cursor.getColumnIndex("Matricula")));
-            intentSearch.putExtra("MatriculaRemolque", cursor.getString(cursor.getColumnIndex("MatriculaRemolque")));
-            intentSearch.putExtra("CodigoChofer", cursor.getString(cursor.getColumnIndex("CodigoChofer")));
-            intentSearch.putExtra("Chofer", cursor.getString(cursor.getColumnIndex("RazonSocial")));
             switch (v.getId()) {
                 case R.id.btn_asignar_transporte:
-                    startActivity(intentSearch);
+                    //startActivity(intentSearch);
                     break;
                 default:
                     Intent intent = new Intent(v.getContext(), BarcodeReader.class);
-                    intent.putExtra("tipoMov", TipoMovimiento.SALIDA);
+                    intent.putExtra("tipoMov", TipoMovimiento.ENTRADA);
                     intent.putExtra("serieMov", cursor.getString(cursor.getColumnIndex("Serie")));
                     intent.putExtra("documentoMov", cursor.getString(cursor.getColumnIndex("Documento")));
                     startActivity(intent);

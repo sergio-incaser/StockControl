@@ -38,6 +38,10 @@
             android:name=".AsignarTransporte"
             android:label="@string/title_activity_asignar_transporte" >
         </activity>
+        <activity
+            android:name=".Recepciones"
+            android:label="@string/title_activity_recepciones" >
+        </activity>
     </application>
 
 </manifest>

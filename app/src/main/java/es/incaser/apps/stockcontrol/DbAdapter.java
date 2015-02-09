@@ -303,6 +303,13 @@ public class DbAdapter extends SQLiteOpenHelper {
                 new String[]{codigoEmpresa, tipoMov, serie, documento, codArticulo, codTalla}, "", "", "FechaRegistro DESC");
     }
 
+    public Cursor getRecepciones(String codigoEmpresa) {
+        String table = "MovimientoStock";
+        String campos ="MAX(id) as id, CodigoEmpresa, Ejercicio, Serie, Documento,  MatriculaTransporte_, SUM(Unidades) AS Unidades";
+        String groupBy = "CodigoEmpresa, Ejercicio, Serie, Documento,  MatriculaTransporte_";
+        return db.query(table, new String[]{campos}, "CodigoEmpresa=? AND TipoMovimiento=?",
+                new String[]{codigoEmpresa, TipoMovimiento.ENTRADA}, groupBy, "", "FechaRegistro DESC");
+    }
     public Cursor getExpediciones(String codigoEmpresa) {
         // MovimientosStock Distinct serie-documento
         String table = "MovimientoStock LEFT JOIN Choferes ON MovimientoStock.CodigoChofer=Choferes.CodigoChofer";
@@ -310,8 +317,8 @@ public class DbAdapter extends SQLiteOpenHelper {
                 "MAX(FechaRegistro) AS FechaRegistro, SUM(Unidades) AS Unidades," +
                 "MAX(Matricula) as Matricula, MAX(MatriculaRemolque) as MatriculaRemolque," +
                 "MAX(MovimientoStock.CodigoChofer) as CodigoChofer, MAX(Choferes.RazonSocial) as RazonSocial";
-        return db.query(table, new String[]{campos}, "MovimientoStock.CodigoEmpresa=? AND TipoMovimiento=2",
-                new String[]{codigoEmpresa}, "MovimientoStock.CodigoEmpresa, Serie, Documento", "", "Serie, Documento");
+        return db.query(table, new String[]{campos}, "MovimientoStock.CodigoEmpresa=? AND TipoMovimiento=?",
+                new String[]{codigoEmpresa, TipoMovimiento.SALIDA}, "MovimientoStock.CodigoEmpresa, Serie, Documento", "", "Serie, Documento");
     }
 
     public int getNumSerieLeidosCount(String movPosicion) {

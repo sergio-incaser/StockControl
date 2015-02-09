@@ -132,11 +132,7 @@ public class BarcodeReader extends ActionBarActivity {
         public MovStockAdapter(Context ctx){
             context = ctx;
             dbAdapter = new DbAdapter(context);
-            if (tipoMov.equals("1")){
-                cursor = dbAdapter.getMovimientoStock(MainActivity.codigoEmpresa, tipoMov);
-            }else {
-                cursor = dbAdapter.getMovimientoStock(MainActivity.codigoEmpresa, tipoMov, serieMov, documentoMov);
-            }
+            cursor = dbAdapter.getMovimientoStock(MainActivity.codigoEmpresa, tipoMov, serieMov, documentoMov);
             cursor.moveToFirst();
         }
 

@@ -74,7 +74,7 @@ public class MainActivity extends ActionBarActivity {
                 launchHardSync();
                 break;
             case R.id.lay_entradas_previstas:
-                intent = new Intent(this, BarcodeReader.class);
+                intent = new Intent(this, Recepciones.class);
                 intent.putExtra("tipoMov",TipoMovimiento.ENTRADA);
                 startActivity(intent);
                 break;
