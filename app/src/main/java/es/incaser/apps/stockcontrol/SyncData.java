@@ -133,7 +133,7 @@ public class SyncData {
 
         Cursor curNuevos = dbAdapter.getMovimientoStockToCreate(TipoMovimiento.SALIDA, lastSyncDate);
         Log.w("Exportando Nuevos MovStock "+tipoMov,String.valueOf(curNuevos.getCount()));
-        if (curNuevos.moveToFirst()){
+        if (curNuevos.getCount()>0){
             int nuevos = copyRecords(curNuevos, "MovimientoStock", conSQL.getResultset("SELECT * FROM MovimientoStock WHERE 1=2",true));
             if (nuevos > 0){
                 dbAdapter.updateStatusSync("MovimientoStock", StatusSync.PARA_CREAR, StatusSync.ESCANEADO);

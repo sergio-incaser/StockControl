@@ -271,6 +271,7 @@ public class BarcodeReader extends ActionBarActivity {
         Bundle bundle = getIntent().getExtras();
         ContentValues cv = new ContentValues();
         cv.put("CodigoEmpresa", MainActivity.codigoEmpresa);
+        cv.put("EmpresaOrigen", MainActivity.codigoEmpresa);
         cv.put("Ejercicio",MainActivity.contextNow("yyyy"));
         cv.put("Periodo", Tools.getToday("MM"));
         cv.put("Fecha", Tools.getToday());
@@ -288,7 +289,9 @@ public class BarcodeReader extends ActionBarActivity {
         cv.put("Comentario", "Articulo manual");
         cv.put("StatusAcumulado", 0);
         cv.put("OrigenMovimiento", "S");
-        cv.put("MovPosicion", UUID.randomUUID().toString().toUpperCase());
+        String uuid = UUID.randomUUID().toString().toUpperCase();
+        cv.put("MovPosicion", uuid);
+        cv.put("MovOrigen", uuid);
         cv.put("UsuarioProceso", 1);
         cv.put("EjercicioDocumento", MainActivity.contextNow("yyyy"));
         cv.put("Proceso", UUID.randomUUID().toString().toUpperCase());
