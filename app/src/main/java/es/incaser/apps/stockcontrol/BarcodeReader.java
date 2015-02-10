@@ -306,6 +306,9 @@ public class BarcodeReader extends ActionBarActivity {
         cv.put("MatriculaRemolque", bundle.getString("MatriculaRemolque"));
         cv.put("CodigoChofer", bundle.getString("CodigoChofer"));
         if (dbAdapter.createMovimientoStock(cv) != -1){
+            //Actualizo la fecha del resto de movStock que forman la expedicion
+            //de lo contrario no se updatan estos movimientos a no ser que se escaneen productos
+            //dbAdapter.updateMovimientoStock(tipoMov, serieMov, documentoMov, new ContentValues());
             expedirBarcode(code);
         }
     }
