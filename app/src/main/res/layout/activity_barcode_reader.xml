@@ -58,11 +58,29 @@
             </RelativeLayout>
 
         </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" 
-            android:text="Información a tiempo real"
-            style="@style/EtiquetaTitulo"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Información a tiempo real"
+                style="@style/EtiquetaTitulo"
+                android:layout_weight="7" />
+
+            <TextView
+                style="@style/EtiquetaTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="24.578"
+                android:id="@+id/tv_barcode_peso_total"
+                android:layout_weight="10"
+                android:gravity="end" />
+        </LinearLayout>
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
@@ -76,5 +94,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"></ListView>
         </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>

@@ -126,11 +126,22 @@ public class SyncData {
         return numReg;
     }
 
-    public int exportMovStock(String tipoMov, String syncDate) {
+    public int  exportMovStock(String tipoMov, String syncDate) {
         int numReg = 0;
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this.myContext);
         String lastSyncDate = pref.getString("pref_last_sync", "2000-01-01 00:00:00.0");
 
+        Cursor curNuevos = dbAdapter.getMovimientoStockToCreate(TipoMovimiento.SALIDA, lastSyncDate);
+        Log.w("Exportando Nuevos MovStock "+tipoMov,String.valueOf(curNuevos.getCount()));
+        if (curNuevos.moveToFirst()){
+            int nuevos = copyRecords(curNuevos, "MovimientoStock", conSQL.getResultset("SELECT * FROM MovimientoStock WHERE 1=2",true));
+            if (nuevos > 0){
+                dbAdapter.updateStatusSync("MovimientoStock", StatusSync.PARA_CREAR, StatusSync.ESCANEADO);
+            }
+            Log.w("Exportados Nuevos MovStock "+tipoMov,String.valueOf(nuevos));
+
+        }
+        
         Cursor cursor = dbAdapter.getMovimientoStockModif(TipoMovimiento.SALIDA, lastSyncDate);
         Log.w("Exportando MovStock "+tipoMov,String.valueOf(cursor.getCount()));
         while (cursor.moveToNext()) {
@@ -138,7 +149,9 @@ public class SyncData {
                     "Matricula='"+cursor.getString(cursor.getColumnIndex("Matricula"))+"'," +
                     "MatriculaRemolque='" + cursor.getString(cursor.getColumnIndex("MatriculaRemolque"))+"'," +
                     "CodigoChofer='"+cursor.getString(cursor.getColumnIndex("CodigoChofer"))+"',"+
-                    "FechaRegistro = " + date2Sql(syncDate) +
+                    "FechaRegistro = " + date2Sql(syncDate) +"',"+
+                    "Unidades = " +  cursor.getString(cursor.getColumnIndex("Unidades"))+"',"+
+                    "Unidades2_ = " +  cursor.getString(cursor.getColumnIndex("Unidades"))+
                     " WHERE MovPosicion='" + cursor.getString(cursor.getColumnIndex("MovPosicion")) + "'");
             numReg++;
         };
@@ -311,7 +324,6 @@ public class SyncData {
                     target.updateString(col, val);
                 }
                 target.insertRow();
-                String a="sss";
             }
             Log.w(tableSource, "Exportados: " + source.getCount());
         } catch (java.sql.SQLException e) {

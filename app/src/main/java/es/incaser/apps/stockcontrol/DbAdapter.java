@@ -283,8 +283,13 @@ public class DbAdapter extends SQLiteOpenHelper {
     }
 
     public Cursor getMovimientoStockModif(String tipoMov, String lastSyncDate) {
-        return db.query("MovimientoStock", new String[]{"*"}, "TipoMovimiento=? AND FechaRegistro>?",
-                new String[]{tipoMov, lastSyncDate}, "", "", "FechaRegistro");
+        return db.query("MovimientoStock", new String[]{"*"}, "TipoMovimiento=? AND FechaRegistro>? AND StatusAndroidSync=?",
+                new String[]{tipoMov, lastSyncDate, StatusSync.PREVISTO}, "", "", "FechaRegistro");
+    }
+
+    public Cursor getMovimientoStockToCreate(String tipoMov, String lastSyncDate) {
+        return db.query("MovimientoStock", new String[]{"*"}, "TipoMovimiento=? AND FechaRegistro>? AND StatusAndroidSync=?",
+                new String[]{tipoMov, lastSyncDate, StatusSync.PARA_CREAR}, "", "", "FechaRegistro");
     }
 
     public Cursor getMovimientoStock(String codigoEmpresa, String tipoMov) {
@@ -316,7 +321,7 @@ public class DbAdapter extends SQLiteOpenHelper {
         String campos ="MAX(MovimientoStock.id) as id, MovimientoStock.CodigoEmpresa, Serie, Documento," +
                 "MAX(FechaRegistro) AS FechaRegistro, SUM(Unidades) AS Unidades," +
                 "MAX(Matricula) as Matricula, MAX(MatriculaRemolque) as MatriculaRemolque," +
-                "MAX(MovimientoStock.CodigoChofer) as CodigoChofer, MAX(Choferes.RazonSocial) as RazonSocial";
+                "MAX(MovimientoStock.CodigoChofer) as CodigoChofer, MAX(Choferes.RazonSocial) as RazonSocial, MIN(MovimientoStock.StatusAndroidSync) AS StatusAndroidSync";
         return db.query(table, new String[]{campos}, "MovimientoStock.CodigoEmpresa=? AND TipoMovimiento=?",
                 new String[]{codigoEmpresa, TipoMovimiento.SALIDA}, "MovimientoStock.CodigoEmpresa, Serie, Documento", "", "Serie, Documento");
     }
@@ -327,7 +332,22 @@ public class DbAdapter extends SQLiteOpenHelper {
         return cur.getCount();
     }
 
+    public Cursor getSumMovArticuloSerie(String codigoEmpresa, String tipoMovimiento, String serie, String documento) {
+        String where ="CodigoEmpresa=? AND OrigenDocumento=? AND SerieDocumento=? AND Documento=? AND StatusAndroidSync >= ?";
+        Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"SUM(TBL_Peso) AS TBL_Peso"}, where,
+                new String[]{codigoEmpresa, TipoMovimiento.origenMov(tipoMovimiento), serie, documento, StatusSync.ESCANEADO}, "", "", "");
+        return cur;
+    }
 
+    public String getPesoEscaneado(String codigoEmpresa, String tipoMovimiento, String serie, String documento) {
+        Cursor cur = getSumMovArticuloSerie(codigoEmpresa, tipoMovimiento, serie, documento);
+        Double peso = 0.0;
+        if(cur.moveToFirst()){
+            peso = cur.getDouble(cur.getColumnIndex("TBL_Peso"))/1000;
+        }
+        return String.valueOf(peso);
+    }
+    
 
     public long createMovimientoArticuloSerie(Cursor curMovStock, String numeroSerie) {
         ContentValues cv = new ContentValues();
@@ -350,10 +370,15 @@ public class DbAdapter extends SQLiteOpenHelper {
         return db.insert("MovimientoArticuloSerie", null, cv);
     }
 
-    
+    public long createMovimientoStock(ContentValues cv){
+        return db.insert("MovimientoStock", null, cv);
+    }
     
     public Cursor getArticulosSeries(String codigoEmpresa, String numeroSerie) {
-        return db.query("ArticulosSeries", new String[]{"*"}, "CodigoEmpresa=? AND NumeroSerieLc=?",
+        String campos = " ArticulosSeries.*, Articulos.CodigoSubfamilia, Articulos.PesoNetoUnitario_, Articulos.VolumenUnitario_";
+        String table = "ArticulosSeries LEFT JOIN Articulos ON\n" +
+                " ArticulosSeries.CodigoEmpresa = Articulos.CodigoEmpresa AND ArticulosSeries.CodigoArticulo = Articulos.CodigoArticulo";
+        return db.query(table, new String[]{campos}, "ArticulosSeries.CodigoEmpresa=? AND ArticulosSeries.NumeroSerieLc=?",
                 new String[]{codigoEmpresa, numeroSerie}, "", "", "");
     }
 
@@ -380,9 +405,25 @@ public class DbAdapter extends SQLiteOpenHelper {
         return db.update("MovimientoStock", cv, "MovPosicion = ?", new String[]{movPosicion});
     }
 
+    public int updateUnidadesMovStock(String movPosicion, int numArticulos) {
+        ContentValues cv = new ContentValues();
+        cv.put("FechaRegistro", MainActivity.contextNow());
+        cv.put("Unidades", numArticulos);
+        cv.put("Unidades2_", numArticulos);
+        return db.update("MovimientoStock", cv, "MovPosicion = ?", new String[]{movPosicion});
+    }
+
     public int updateMovimientoStock(String tipoMov, String serie, String documento, ContentValues cv) {
         cv.put("FechaRegistro", MainActivity.contextNow());
         return db.update("MovimientoStock", cv, "TipoMovimiento=? AND Serie=? AND Documento=?", new String[]{tipoMov, serie, documento});
+    }
+
+    public int updateMovimientoStock(String tipoMov, String serie, String documento, String oldStatus, String newStatus) {
+        ContentValues cv = new ContentValues();
+        cv.put("StatusAndroidSync", newStatus);
+        //cv.put("FechaRegistro", MainActivity.contextNow());
+        String where = "TipoMovimiento=? AND Serie=? AND Documento=? AND StatusAndroidSync=?";
+        return db.update("MovimientoStock", cv, where, new String[]{tipoMov, serie, documento, oldStatus});
     }
     
     public Cursor getMovArticuloSerieNumSerie(String origenDoc, String numeroSerie){
