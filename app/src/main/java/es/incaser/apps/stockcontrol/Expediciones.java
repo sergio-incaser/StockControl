@@ -174,6 +174,8 @@ public class Expediciones extends ActionBarActivity{
                         intent.putExtra("Matricula", cursor.getString(cursor.getColumnIndex("Matricula")));
                         intent.putExtra("MatriculaRemolque", cursor.getString(cursor.getColumnIndex("MatriculaRemolque")));
                         intent.putExtra("CodigoChofer", cursor.getString(cursor.getColumnIndex("CodigoChofer")));
+                        intent.putExtra("NumeroExpedicion", cursor.getString(cursor.getColumnIndex("NumeroExpedicion")));
+                        intent.putExtra("CodigoDestinatario", cursor.getString(cursor.getColumnIndex("CodigoDestinatario")));
 
                         startActivity(intent);
                         break;
@@ -207,6 +209,8 @@ public class Expediciones extends ActionBarActivity{
             if (Integer.valueOf(getMovimiento("StatusAndroidSync")) == 0) {
                 if ((getMovimiento("Matricula").length() > 0) &&
                         (getMovimiento("MatriculaRemolque").length() > 0)) {
+                    dbAdapter.updateUnidadesMovStock(MainActivity.codigoEmpresa,
+                            TipoMovimiento.SALIDA, getMovimiento("Serie"),getMovimiento("Documento"));
                     dbAdapter.updateMovimientoStock(TipoMovimiento.SALIDA,
                             getMovimiento("Serie"), getMovimiento("Documento"),
                             StatusSync.PREVISTO, StatusSync.ESCANEADO);

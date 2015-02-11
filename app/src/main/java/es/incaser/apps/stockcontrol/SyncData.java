@@ -136,10 +136,13 @@ public class SyncData {
         if (curNuevos.getCount()>0){
             int nuevos = copyRecords(curNuevos, "MovimientoStock", conSQL.getResultset("SELECT * FROM MovimientoStock WHERE 1=2",true));
             if (nuevos > 0){
-                dbAdapter.updateStatusSync("MovimientoStock", StatusSync.PARA_CREAR, StatusSync.ESCANEADO);
+                dbAdapter.updateStatusSync("MovimientoStock", StatusSync.PARA_CREAR, StatusSync.EXPORTADO);
+                conSQL.updateSQL("UPDATE MovimientoStock " +
+                        "SET StatusAndroidSync=" + StatusSync.EXPORTADO+", "+
+                        "FechaRegistro= "+ date2Sql(syncDate) +
+                        " WHERE StatusAndroidSync=" + StatusSync.PARA_CREAR);
             }
             Log.w("Exportados Nuevos MovStock "+tipoMov,String.valueOf(nuevos));
-
         }
         
         Cursor cursor = dbAdapter.getMovimientoStockModif(TipoMovimiento.SALIDA, lastSyncDate);
@@ -149,9 +152,10 @@ public class SyncData {
                     "Matricula='"+cursor.getString(cursor.getColumnIndex("Matricula"))+"'," +
                     "MatriculaRemolque='" + cursor.getString(cursor.getColumnIndex("MatriculaRemolque"))+"'," +
                     "CodigoChofer='"+cursor.getString(cursor.getColumnIndex("CodigoChofer"))+"',"+
-                    "FechaRegistro = " + date2Sql(syncDate) +"',"+
-                    "Unidades = " +  cursor.getString(cursor.getColumnIndex("Unidades"))+"',"+
-                    "Unidades2_ = " +  cursor.getString(cursor.getColumnIndex("Unidades"))+
+                    "FechaRegistro = " + date2Sql(syncDate) +","+
+                    "Unidades = " +  cursor.getString(cursor.getColumnIndex("Unidades"))+","+
+                    "Unidades2_ = " +  cursor.getString(cursor.getColumnIndex("Unidades"))+","+
+                    "StatusAndroidSync = " + StatusSync.EXPORTADO +
                     " WHERE MovPosicion='" + cursor.getString(cursor.getColumnIndex("MovPosicion")) + "'");
             numReg++;
         };

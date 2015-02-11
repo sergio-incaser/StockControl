@@ -243,7 +243,7 @@ public class BarcodeReader extends ActionBarActivity {
                 curMovStock.moveToFirst();
                 Cursor movArtSerie = dbAdapter.getMovArticuloSerieNumSerie(TipoMovimiento.origenMov(tipoMov), code);
                 if (movArtSerie.getCount() == 0){
-                    dbAdapter.createMovimientoArticuloSerie(curMovStock, code);
+                    dbAdapter.createMovimientoArticuloSerie(curMovStock, cursor, code);
                     int numArticulos = dbAdapter.getNumSerieLeidosCount(curMovStock.getString(curMovStock.getColumnIndex("MovPosicion")));
                     int res = 0;
                     if (numArticulos > curMovStock.getInt(curMovStock.getColumnIndex("Unidades"))){
@@ -285,6 +285,7 @@ public class BarcodeReader extends ActionBarActivity {
         cv.put("TipoMovimiento", tipoMov);
         cv.put("Unidades", 1);
         cv.put("Unidades2_", 1);
+        cv.put("Precio", 1);
         cv.put("FactorConversion_", 1);
         cv.put("Comentario", "Articulo manual");
         cv.put("StatusAcumulado", 0);
@@ -292,7 +293,7 @@ public class BarcodeReader extends ActionBarActivity {
         String uuid = UUID.randomUUID().toString().toUpperCase();
         cv.put("MovPosicion", uuid);
         cv.put("MovOrigen", uuid);
-        cv.put("UsuarioProceso", 1);
+        cv.put("UsuarioProceso", 0);
         cv.put("EjercicioDocumento", MainActivity.contextNow("yyyy"));
         cv.put("Proceso", UUID.randomUUID().toString().toUpperCase());
         cv.put("CodigoDestinatario", bundle.getString("CodigoDestinatario"));
@@ -305,6 +306,8 @@ public class BarcodeReader extends ActionBarActivity {
         cv.put("Matricula", bundle.getString("Matricula"));
         cv.put("MatriculaRemolque", bundle.getString("MatriculaRemolque"));
         cv.put("CodigoChofer", bundle.getString("CodigoChofer"));
+        cv.put("CodigoDestinatario", bundle.getString("CodigoDestinatario"));
+
         if (dbAdapter.createMovimientoStock(cv) != -1){
             //Actualizo la fecha del resto de movStock que forman la expedicion
             //de lo contrario no se updatan estos movimientos a no ser que se escaneen productos
