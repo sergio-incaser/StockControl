@@ -342,6 +342,13 @@ public class DbAdapter extends SQLiteOpenHelper {
         return cur;
     }
 
+    public Cursor getMovArticuloSerieByDoc(String codigoEmpresa, String tipoMovimiento, String serie, String documento) {
+        String where ="CodigoEmpresa=? AND OrigenDocumento=? AND SerieDocumento=? AND Documento=?";
+        Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"*"}, where,
+                new String[]{codigoEmpresa, TipoMovimiento.origenMov(tipoMovimiento), serie, documento}, "", "", "");
+        return cur;
+    }
+
     public void updateUnidadesMovStock(String codigoEmpresa, String tipoMovimiento, String serie, String documento) {
         String sql = "UPDATE MovimientoStock SET Unidades = (SELECT COUNT(id) " +
                     "FROM MovimientoArticuloSerie " +
@@ -460,65 +467,6 @@ public class DbAdapter extends SQLiteOpenHelper {
 
 
     //*******************************************************************************////
-
-    public Cursor getMaquina(String id) {
-        return db.query("Maquinas", new String[]{"*"}, "id=?", new String[]{id}, "", "", "");
-    }
-
-    public Cursor getRecaudacion(String codigoEmpresa, String codigoEstablecimiento, String codigoMaquina) {
-        return db.query("INC_LineasRecaudacion", new String[]{"*"}, "CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=?",
-                new String[]{codigoEmpresa, codigoEstablecimiento, codigoMaquina}, "", "", "");
-    }
-
-    public Cursor getCabeceraRecaudacion(String codigoEmpresa, String codigoEstablecimiento) {
-        return db.query("INC_CabeceraRecaudacion", new String[]{"*"}, "CodigoEmpresa=? AND INC_CodigoEstablecimiento=?",
-                new String[]{codigoEmpresa, codigoEstablecimiento}, "", "", "");
-    }
-
-
-    public Cursor getPrestamosEstablecimiento(String codigoEmpresa, String codigoEstablecimiento) {
-        return db.query("Prestamos", new String[]{"*"}, "CodigoEmpresa=? AND INC_CodigoEstablecimiento=?",
-                new String[]{codigoEmpresa, codigoEstablecimiento}, "", "", "");
-    }
-
-    public Cursor getPrestamo(String codigoPrestamo) {
-        return db.query("Prestamos", new String[]{"*"}, "INC_CodigoPrestamo=?",
-                new String[]{codigoPrestamo}, "", "", "");
-    }
-
-    public Map<String, String> getDicRelLineasCabecerax() {
-        Map<String, String> dicRelLineasCabecera = new HashMap<String, String>();
-        dicRelLineasCabecera.put("INC_ImporteRecaudacion", "INC_TotalRecaudacion");
-        dicRelLineasCabecera.put("INC_ImporteRetencion", "INC_TotalRetencion");
-        dicRelLineasCabecera.put("INC_ImporteNeto", "INC_TotalNeto");
-        dicRelLineasCabecera.put("INC_ImporteEstablecimiento", "INC_TotalEstablecimiento");
-
-        return dicRelLineasCabecera;
-    }
-
-    public Cursor getTotalesRecaudacion(String empresa, String establecimiento, String fecha) {
-//        Map<String, String> dicRelLineasCabecera = getDicRelLineasCabecera();
-//        String[] campos = dicRelLineasCabecera.keySet().toString().replace("[","").replace("]","").split(",");
-        String[] campos = new String[]{
-                "SUM(INC_ImporteRecaudacion) AS INC_TotalRecaudacion",
-                "SUM(INC_ImporteRetencion) AS INC_TotalRetencion",
-                "SUM(INC_ImporteNeto) AS INC_TotalNeto",
-                "SUM(INC_ImporteEstablecimiento) AS INC_TotalEstablecimiento",
-                "SUM(INC_ImporteNeto + INC_ImporteRetencion)  AS INC_TotalNetoMasRetencion",
-                "SUM(INC_RecuperaCargaEmpresa) AS INC_TotalRecuperaCarga",
-                "0 AS INC_TotalRecuperaPrestamo",
-                "0 AS INC_TotalSaldo",
-                "0 AS INC_MaquinasInstaladas",
-                "COUNT() AS INC_MaquinasRecaudadas",
-                "0 AS INC_StatusAlbaran",
-                "0 AS INC_Porcentaje",
-        };
-
-        String where = "Printable=1 AND CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_FechaRecaudacion=?";
-        String groupBy = "CodigoEmpresa, INC_CodigoEstablecimiento, INC_FechaRecaudacion";
-        String[] whereArgs = new String[]{empresa, establecimiento, fecha};
-        return db.query("INC_LineasRecaudacion", campos, where, whereArgs, groupBy, "", "");
-    }
 
     public Cursor getCursor(String query) {
         return db.rawQuery(query, new String[]{});

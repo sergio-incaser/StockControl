@@ -33,5 +33,6 @@
     <string name="action_db_rebuild">Regenerar bd</string>
     <string name="action_soft_sync">Soft sync</string>
     <string name="title_activity_recepciones">Recepciones</string>
+    <string name="title_activity_mov_articulo_serie_detail">Detalle movimiento</string>
 
 </resources>
