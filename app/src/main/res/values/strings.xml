@@ -44,5 +44,7 @@
     <string name="status_sync_sync_saica">SINCRONIZADO CON SAICA</string>
     <string name="status_sync_para_crear">PARA CREAR</string>
     <string name="status_sync_not_insql">NO EN SQL</string>
+    <string name="app_label">Stock Control</string>
+    <string name="search_hint">Buscar...</string>
 
 </resources>

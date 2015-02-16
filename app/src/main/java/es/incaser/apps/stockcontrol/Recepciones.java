@@ -1,5 +1,7 @@
 package es.incaser.apps.stockcontrol;
 
+import android.app.SearchManager;
+import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,13 +15,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
 
 
-public class Recepciones extends ActionBarActivity {
+public class Recepciones extends ActionBarActivity implements SearchView.OnQueryTextListener{
     ListView lvMovimientoStock;
     MovStockAdapter movStockAdapter;
     DbAdapter dbAdapter;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +52,39 @@ public class Recepciones extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_recepciones, menu);
+        searchView = (SearchView) menu.findItem(R.id.reception_search).getActionView();
+        setupSearchView();
         return true;
     }
 
+    private void setupSearchView() {
+
+
+        //searchView.setIconifiedByDefault(true);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        if (searchManager != null) {
+            List<SearchableInfo> searchables = searchManager.getSearchablesInGlobalSearch();
+
+            // Try to use the "applications" global search provider
+            SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
+            for (SearchableInfo inf : searchables) {
+                if (inf.getSuggestAuthority() != null
+                        && inf.getSuggestAuthority().startsWith("applications")) {
+                    info = inf;
+                }
+            }
+            searchView.setSearchableInfo(info);
+        }
+
+        searchView.setOnQueryTextListener(this);
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                return false;
+            }
+        });
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -62,6 +99,19 @@ public class Recepciones extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        //Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        //Toast.makeText(this, newText, Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
     public class MovStockAdapter extends BaseAdapter implements View.OnClickListener{
         Context context;
         Cursor cursor;
