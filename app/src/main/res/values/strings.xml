@@ -34,5 +34,15 @@
     <string name="action_soft_sync">Soft sync</string>
     <string name="title_activity_recepciones">Recepciones</string>
     <string name="title_activity_mov_articulo_serie_detail">Detalle movimiento</string>
+    <string name="title_activity_mov_articulo_serie">Mov. Series</string>
+    <string name="status_sync_previsto">PREVISTO</string>
+    <string name="status_sync_pend_importar">PENDIENTE IMPORTAR</string>
+    <string name="status_sync_importando">IMPORTANDO</string>
+    <string name="status_sync_escaneado">ESCANEADO</string>
+    <string name="status_sync_exportando">EXPORTANDO</string>
+    <string name="status_sync_exportado">EXPORTADO</string>
+    <string name="status_sync_sync_saica">SINCRONIZADO CON SAICA</string>
+    <string name="status_sync_para_crear">PARA CREAR</string>
+    <string name="status_sync_not_insql">NO EN SQL</string>
 
 </resources>

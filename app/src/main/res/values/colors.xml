@@ -5,4 +5,7 @@
     <color name="white">#fff</color>
     <color name="grey">#ffd9d8d7</color>
     <color name="button">#ffff8843</color>
+    <color name="status_previsto">#ffd9fff7</color>
+    <color name="status_escaneado">#ffb0ff68</color>
+    <color name="status_para_crear">#ff5338ff</color>
 </resources>

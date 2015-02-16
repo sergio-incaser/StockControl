@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:padding="5dp"
+    android:background="#ddd">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/lay_item_mov_art_serie"
+        android:padding="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:padding="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/etiquetasCuadro"
+                        android:text="Artículo"/>
+                    <TextView
+                        android:id="@+id/tv_mov_art_serie_articulo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        style="@style/datosCuadros"
+                        android:text="SK"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+
+                    >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            style="@style/etiquetasCuadro"
+                            android:text="Gramaje"/>
+                        <TextView
+                            android:id="@+id/tv_mov_art_serie_gramaje"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            style="@style/datosCuadros"
+                            android:gravity="left"
+                            android:text="135"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/etiquetasCuadro"
+                        android:text="Ancho"/>
+                    <TextView
+                        android:id="@+id/tv_mov_art_serie_ancho"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        style="@style/datosCuadros"
+                        android:text="2330"
+                        />
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        style="@style/etiquetasCuadro"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Diametro" />
+
+                    <TextView
+                        style="@style/datosCuadros"
+                        android:id="@+id/tv_mov_art_serie_diametro"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        android:text="140" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_weight="10"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/etiquetasCuadro"
+                        android:text="Peso"/>
+
+                    <TextView
+                        android:id="@+id/tv_mov_art_serie_peso"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/datosCuadros"
+                        android:gravity="left"
+                        android:text="2462"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="7"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        style="@style/etiquetasCuadro"
+                        android:text="Longitud"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_mov_art_serie_longitud"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        style="@style/datosCuadros"
+                        android:text="10126"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="10"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        style="@style/etiquetasCuadro"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Año" />
+
+                    <TextView
+                        style="@style/datosCuadros"
+                        android:id="@+id/tv_mov_art_serie_ano"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="left"
+                        android:text="1998" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="44609549052703"
+                    android:id="@+id/tv_mov_art_serie_num_serie"
+                    android:layout_weight="10"
+                    style="@style/datosCuadros" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Leida"
+                    android:id="@+id/tv_mov_art_serie_status_sync"
+                    android:layout_weight="10"
+                    android:gravity="end" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

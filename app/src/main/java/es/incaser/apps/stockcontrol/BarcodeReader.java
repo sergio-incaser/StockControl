@@ -6,12 +6,17 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.util.Linkify;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,7 +27,7 @@ import android.widget.Toast;
 import java.util.UUID;
 
 
-public class BarcodeReader extends ActionBarActivity {
+public class BarcodeReader extends ActionBarActivity{
     String tipoMov;
     String serieMov;
     String documentoMov;
@@ -74,15 +79,38 @@ public class BarcodeReader extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     public void addListenerOnButtonRead() {
         btnReader = (ImageButton) findViewById(R.id.btn_read);
         txtBarcode = (EditText) findViewById(R.id.txt_barcodeReader);
+        
+        txtBarcode.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP){
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_ENTER:
+//                            if (txtBarcode.getText().toString().length() < 13) {
+//                                txtBarcode.setText(String.format("%013d", Long.parseLong(txtBarcode.getText().toString())));
+//                            }
+                            leerCodigo(txtBarcode.getText().toString());
+                            txtBarcode.setText("");
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+        
         
         btnReader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (txtBarcode.getText().toString().length() > 10){
                     leerCodigo(txtBarcode.getText().toString());
+                    txtBarcode.setText("");
                 }else {
                     Toast.makeText(v.getContext(), "Código demasiado corto", Toast.LENGTH_SHORT).show();
                 }
@@ -94,6 +122,17 @@ public class BarcodeReader extends ActionBarActivity {
         lvMovimientoStock = (ListView) findViewById(R.id.lv_movimientoStock);
         movStockAdapter = new MovStockAdapter(this);
         lvMovimientoStock.setAdapter(movStockAdapter);
+        lvMovimientoStock.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(view.getContext(), MovArticuloSerie.class);
+                intent.putExtra("tipoMov", tipoMov);
+                intent.putExtra("serieMov", serieMov);
+                intent.putExtra("documentoMov", documentoMov);
+                intent.putExtra("codArticulo", movStockAdapter.getMovimiento("CodigoArticulo"));
+                startActivity(intent);
+            }
+        });
     }
 
     public void linkButtonCamera() {
@@ -132,7 +171,7 @@ public class BarcodeReader extends ActionBarActivity {
     public class MovStockAdapter extends BaseAdapter{
         Context context;
         Cursor cursor;
-        
+
         public MovStockAdapter(Context ctx){
             context = ctx;
             dbAdapter = new DbAdapter(context);
@@ -202,7 +241,8 @@ public class BarcodeReader extends ActionBarActivity {
         
         private String getMovimiento(String column) {
             return cursor.getString(cursor.getColumnIndex(column));
-        }        
+        }
+
     }
     
     private void leerCodigo(String barCode){

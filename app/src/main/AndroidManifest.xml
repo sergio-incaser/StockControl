@@ -43,8 +43,8 @@
             android:label="@string/title_activity_recepciones" >
         </activity>
         <activity
-            android:name=".MovArticuloSerieDetail"
-            android:label="@string/title_activity_mov_articulo_serie_detail" >
+            android:name=".MovArticuloSerie"
+            android:label="@string/title_activity_mov_articulo_serie" >
         </activity>
     </application>
 

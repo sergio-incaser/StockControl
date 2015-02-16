@@ -23,8 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:padding="15dp"
-                android:text="44671420222703"
-                android:inputType="number" />
+                android:inputType="number"
+                android:hint="Codigo Barras" />
 
             <LinearLayout
                 android:orientation="vertical"

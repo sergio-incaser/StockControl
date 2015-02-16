@@ -349,6 +349,13 @@ public class DbAdapter extends SQLiteOpenHelper {
         return cur;
     }
 
+    public Cursor getMovArticuloSerieByDoc(String codigoEmpresa, String tipoMovimiento, String serie, String documento, String articulo) {
+        String where ="CodigoEmpresa=? AND OrigenDocumento=? AND SerieDocumento=? AND Documento=? AND CodigoArticulo=?";
+        Cursor cur = db.query("MovimientoArticuloSerie", new String[]{"*"}, where,
+                new String[]{codigoEmpresa, TipoMovimiento.origenMov(tipoMovimiento), serie, documento, articulo}, "", "", "");
+        return cur;
+    }
+
     public void updateUnidadesMovStock(String codigoEmpresa, String tipoMovimiento, String serie, String documento) {
         String sql = "UPDATE MovimientoStock SET Unidades = (SELECT COUNT(id) " +
                     "FROM MovimientoArticuloSerie " +
@@ -512,22 +519,6 @@ public class DbAdapter extends SQLiteOpenHelper {
         return db;
     }
 
-    public Cursor getUltimoArqueo(String empresa, String establecimiento, String maquina) {
-        String[] cols = new String[]{"INC_FechaRecaudacion", "INC_ValorArqueoTeorico"};
-        String where = "INC_ArqueoRealizado<>0 AND CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=?";
-        String[] whereArgs = new String[]{empresa, establecimiento, maquina};
-
-        return db.query("RecaudacionesAnteriores", cols, where, whereArgs, "", "", "INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC", "1");
-    }
-
-    public Cursor getUltimaRecaudacion(String empresa, String establecimiento, String maquina) {
-        String[] cols = new String[]{"*"};
-        String where = "CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=?";
-        String[] whereArgs = new String[]{empresa, establecimiento, maquina};
-
-        return db.query("RecaudacionesAnteriores", cols, where, whereArgs, "", "", "INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC", "1");
-    }
-
     public Cursor getIncidencias(String empresa, String establecimiento, String maquina) {
         return getIncidencias(empresa, establecimiento, maquina, false);
     }
@@ -550,73 +541,4 @@ public class DbAdapter extends SQLiteOpenHelper {
 
         return db.query("INC_Incidencias", cols, where, whereArgs, "", "", "");
     }
-
-
-    public Cursor getRecuperacionesPrestamo(String empresa, String codigoPrestamo) {
-        String[] cols = new String[]{"*"};
-        String where = "CodigoEmpresa=? AND INC_CodigoPrestamo=?";
-        String[] whereArgs = new String[]{empresa, codigoPrestamo};
-
-        return db.query("INC_RecuperacionesPrestamo", cols, where, whereArgs,
-                "", "", "INC_FechaRecuperacion DESC");
-    }
-
-    public Cursor getSumasDesde(String empresa, String establecimiento, String maquina, String fechaDesde) {
-        String[] cols = new String[]{"SUM(INC_Bruto) AS SumaBruto",
-                "SUM(INC_JugadoTeorico) AS SumaJugadoTeorico",
-                "SUM(INC_PremioTeorico) AS SumaPremioTeorico",
-                "SUM(INC_ImporteRetencion) AS SumaImporteRetencion",
-                "SUM(INC_RecuperaCargaEmpresa) AS SumaRecuperaCargaEmpresa",
-                "SUM(INC_RecuperaCargaEstablecimiento) AS SumaRecuperaCargaEstablecimiento",
-                "SUM(INC_CargaHopperEmpresa) AS SumaCargaHopperEmpresa",
-                "SUM(INC_CargaHopperEstablecimiento) AS SumaCargaHopperEstablecimiento"};
-        String where = "CodigoEmpresa=? AND INC_CodigoEstablecimiento=? AND INC_CodigoMaquina=? AND INC_FechaRecaudacion > ?";
-        String[] whereArgs = new String[]{empresa, establecimiento, maquina, fechaDesde};
-
-        return db.query("RecaudacionesAnteriores", cols, where, whereArgs, "", "", "INC_FechaRecaudacion DESC, INC_HoraRecaudacion DESC", "1");
-    }
-
-    public void deleteRecaudacion(String idRecaudacion) {
-        db.delete("INC_LineasRecaudacion", "id=?", new String[]{idRecaudacion});
-    }
-
-    public void deleteCabRecaudacion(String idCabRecaudacion) {
-        db.delete("INC_CabeceraRecaudacion", "id=?", new String[]{idCabRecaudacion});
-    }
-
-    public void deleteRecuperacion(String idRecuperacion) {
-        db.delete("INC_RecuperacionesPrestamo", "id=?", new String[]{idRecuperacion});
-    }
-
-    public float getTotalRecuperaPrestamo(String codigoRecaudacion) {
-        String[] cols = new String[]{"SUM(ImporteLiquido) AS SumaImporteLiquido"};
-        String where = "INC_CodigoRecaudacion=?";
-        String[] whereArgs = new String[]{codigoRecaudacion};
-
-        Cursor cur = db.query( "INC_RecuperacionesPrestamo", cols, where, whereArgs, "", "", "");
-        if (cur.moveToFirst()){
-            return cur.getFloat(0);
-        }else {
-            return 0;
-        }
-    }
-
-    public Cursor getTotalRecaudadoAll() {
-        String[] campos = new String[]{
-                "SUM(INC_TotalRecaudacion) AS INC_TotalRecaudacion",
-                "SUM(INC_TotalRetencion) AS INC_TotalRetencion",
-                "SUM(INC_TotalNeto) AS INC_TotalNeto",
-                "SUM(INC_TotalEstablecimiento) AS INC_TotalEstablecimiento",
-                "SUM(INC_TotalNetoMasRetencion)  AS INC_TotalNetoMasRetencion",
-                "SUM(INC_TotalRecuperaCarga) AS INC_TotalRecuperaCarga",
-                "SUM(INC_TotalRecuperaPrestamo) AS INC_TotalRecuperaPrestamo",
-                "SUM(INC_TotalSaldo) AS INC_TotalSaldo",
-                "SUM(INC_MaquinasRecaudadas) AS INC_MaquinasRecaudadas"
-        };
-        String where = "";
-        String[] whereArgs = new String[]{};
-
-        return db.query( "INC_CabeceraRecaudacion", campos, where, whereArgs, "", "", "");
-    }
-
 }
