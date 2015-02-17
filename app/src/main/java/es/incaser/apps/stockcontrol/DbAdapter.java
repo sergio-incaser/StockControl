@@ -316,6 +316,16 @@ public class DbAdapter extends SQLiteOpenHelper {
         return db.query(table, new String[]{campos}, "CodigoEmpresa=? AND TipoMovimiento=?",
                 new String[]{codigoEmpresa, TipoMovimiento.ENTRADA}, groupBy, "", "FechaRegistro DESC");
     }
+
+    public Cursor getRecepcionesSearch(String codigoEmpresa, String searchText) {
+        searchText = "%" + searchText +"%";
+        String table = "MovimientoStock";
+        String campos ="MAX(id) as id, CodigoEmpresa, Ejercicio, Serie, Documento,  MatriculaTransporte_, SUM(Unidades) AS Unidades";
+        String groupBy = "CodigoEmpresa, Ejercicio, Serie, Documento,  MatriculaTransporte_";
+        return db.query(table, new String[]{campos}, "CodigoEmpresa=? AND TipoMovimiento=? AND (Documento like ? OR MatriculaTransporte_ like ?)",
+                new String[]{codigoEmpresa, TipoMovimiento.ENTRADA, searchText, searchText}, groupBy, "", "FechaRegistro DESC");
+    }
+
     public Cursor getExpediciones(String codigoEmpresa) {
         // MovimientosStock Distinct serie-documento
         String table = "MovimientoStock LEFT JOIN Choferes ON MovimientoStock.CodigoChofer=Choferes.CodigoChofer";

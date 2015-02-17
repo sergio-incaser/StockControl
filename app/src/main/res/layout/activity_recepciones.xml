@@ -18,6 +18,7 @@
             android:id="@+id/lv_recepciones"
             android:layout_width="match_parent"
             android:layout_height="match_parent"></ListView>
+        <include layout="@layout/empty_list_view"/>
     </LinearLayout>
 
 </RelativeLayout>

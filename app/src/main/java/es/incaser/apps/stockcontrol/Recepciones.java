@@ -43,6 +43,7 @@ public class Recepciones extends ActionBarActivity implements SearchView.OnQuery
 
     public void linkListViewMovimientoStock(){
         lvMovimientoStock = (ListView) findViewById(R.id.lv_recepciones);
+        lvMovimientoStock.setEmptyView(findViewById(R.id.lay_empty_listview));
         movStockAdapter = new MovStockAdapter(this);
         lvMovimientoStock.setAdapter(movStockAdapter);
     }
@@ -52,39 +53,16 @@ public class Recepciones extends ActionBarActivity implements SearchView.OnQuery
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_recepciones, menu);
-        searchView = (SearchView) menu.findItem(R.id.reception_search).getActionView();
-        setupSearchView();
+        setupSearchView(menu);
         return true;
     }
 
-    private void setupSearchView() {
-
-
-        //searchView.setIconifiedByDefault(true);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        if (searchManager != null) {
-            List<SearchableInfo> searchables = searchManager.getSearchablesInGlobalSearch();
-
-            // Try to use the "applications" global search provider
-            SearchableInfo info = searchManager.getSearchableInfo(getComponentName());
-            for (SearchableInfo inf : searchables) {
-                if (inf.getSuggestAuthority() != null
-                        && inf.getSuggestAuthority().startsWith("applications")) {
-                    info = inf;
-                }
-            }
-            searchView.setSearchableInfo(info);
-        }
-
+    private void setupSearchView(Menu menu) {
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setOnQueryTextListener(this);
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                return false;
-            }
-        });
+        searchView.setIconifiedByDefault(true);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -102,13 +80,13 @@ public class Recepciones extends ActionBarActivity implements SearchView.OnQuery
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        //Toast.makeText(this, query, Toast.LENGTH_SHORT).show();
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        //Toast.makeText(this, newText, Toast.LENGTH_SHORT).show();
+        movStockAdapter.search(newText);
+        movStockAdapter.notifyDataSetChanged();
         return false;
     }
 
@@ -119,7 +97,11 @@ public class Recepciones extends ActionBarActivity implements SearchView.OnQuery
         public MovStockAdapter(Context ctx){
             context = ctx;
             dbAdapter = new DbAdapter(context);
-            cursor = dbAdapter.getRecepciones(MainActivity.codigoEmpresa);
+            search("");
+        }
+
+        public void search(String searchText){
+            cursor = dbAdapter.getRecepcionesSearch(MainActivity.codigoEmpresa, searchText);
             cursor.moveToFirst();
         }
 

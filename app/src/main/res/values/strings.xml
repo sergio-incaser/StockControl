@@ -46,5 +46,6 @@
     <string name="status_sync_not_insql">NO EN SQL</string>
     <string name="app_label">Stock Control</string>
     <string name="search_hint">Buscar...</string>
+    <string name="emptyListView">No hay datos</string>
 
 </resources>
